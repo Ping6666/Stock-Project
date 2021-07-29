@@ -243,6 +243,24 @@ def preProcessASP(inputFileName):
     return
 
 
+def preProcessTWSE_STOCKDAY(newList, stockNum):
+    # pd.DataFrame
+    dfNew = pd.DataFrame({
+        'Date': [i[0] for i in newList],
+        'Open': [float(i[1]) for i in newList],
+        'High': [float(i[2]) for i in newList],
+        'Low': [float(i[3]) for i in newList],
+        'Close': [float(i[4]) for i in newList],
+        'Volume': [float(i[5]) for i in newList],
+        'Foreign': [0] * len(newList),
+        'Trust': [0] * len(newList),
+        'Dealer': [0] * len(newList),
+        'ForeignRatio': [0] * len(newList)
+    })
+    preProcessFromStock(dfNew, stockNum)
+    return
+
+
 def preProcessHTML(inputFileName):
     # inputFileName : K_Chart-stockNum-yymmdd.html
     inputFileName_ = inputFileName.replace('.html', '')

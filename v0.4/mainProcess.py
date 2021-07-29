@@ -1,4 +1,5 @@
 import os, sys, getopt
+from dataCrawler_YahooFinance import *
 from preProcess import *
 from postProcess import *
 from visualizeData import *
@@ -15,6 +16,7 @@ def main(argv):
     outputStr1 = 'fileName with asp  : ShowBuySaleChartData-stockNum.asp'
     outputStr2 = 'fileName with html : K_Chart-stockNum-yymmdd.html'
     outputStr3 = 'fileName with csv  : stockNum.csv'
+    outputStr4 = 'fileName with txt  : stock.txt'
     fileBase1, fileBase2 = '../rawData/', '../postData/'
     try:
         opts, args = getopt.getopt(argv, "h:a:pi:l:",
@@ -25,16 +27,23 @@ def main(argv):
     for opt, arg in opts:
         if opt == '-h':
             print(outputStr + '\n' + outputStr1 + '\n' + outputStr2 + '\n' +
-                  outputStr3 + '\n')
+                  outputStr3 + '\n' + outputStr4 + '\n')
             sys.exit(1)
         elif opt in ("-i", "--iFile"):
-            if '.asp' in arg or '.html' in arg or '.csv' in arg or '.TW' in arg:
+            # asp, html, csv and txt are for preProcess
+            # but txt will use crawler to download data from yahoo finance
+            # .TW is for visualize the data
+            if '.asp' in arg or '.html' in arg or '.csv' in arg or '.txt' in arg or '.TW' in arg:
                 inputFile = arg
                 check = 1
             else:
-                print("Input file need to be a asp or html or csv file.")
+                print(
+                    "Input file need to be a asp or html or csv or txt file.")
                 sys.exit(1)
         elif opt in ("-a", "--tFile"):
+            # asp : pre download asp from goodinfo and process
+            # html : pre download html from goodinfo and process
+            # csv : just want to renew the file from csv to csv (add new data)
             if '.asp' == arg or '.html' == arg or '.csv' == arg:
                 inputFileType = arg
                 check = 10
@@ -57,6 +66,9 @@ def main(argv):
                 postProcessPATH(fileBase2)
             elif '.html' in inputFile:
                 preProcessHTML(inputFile)
+                postProcessPATH(fileBase2)
+            elif '.txt' in inputFile:
+                crawlerReadFile(inputFile, ".TW")
                 postProcessPATH(fileBase2)
             elif '.csv' in inputFile:
                 preProcessCSV(inputFile)
