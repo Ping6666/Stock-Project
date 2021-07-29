@@ -1,15 +1,22 @@
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+import time
 
 
 def downloadData(stockID, year):
-    FilePath_ = "D:/Programming/StockProject/code/v0.3/chromedriver.exe"
+    time.sleep(10)
+    FilePath_ = "D:/Programming/StockProject/code/v0.1_Crawler/chromedriver.exe"
     urlOriginal_ = "https://goodinfo.tw/StockInfo/ShowK_Chart.asp?STOCK_ID=" + str(
         stockID) + "&CHT_CAT2=DATE"
     # Options
     options = Options()
     options.add_argument("--disable-notifications")
+    options.add_argument('--ignore-certificate-errors')
+    options.add_argument('--ignore-ssl-errors')
+    options.add_argument('--incognito')
+    userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:53.0) Gecko/20100101 Firefox/53.0"
+    options.add_argument("user-agent={}".format(userAgent))
     options.add_experimental_option(
         "prefs", {
             "download.default_directory":
@@ -29,8 +36,8 @@ def downloadData(stockID, year):
             "+encodeURIComponent(365),divK_ChartDetail,txtK_ChartDetailLoading);"
         )
     except KeyboardInterrupt:
-        return
-    else:
+        exit(3)
+    except:
         print("When process stock no. " + str(stockID) +
               " BAD thing was happened.")
         return
@@ -59,10 +66,10 @@ def downloadData(stockID, year):
 def listProcess(newList):
     for new_ in newList:
         try:
-            downloadData(new_, '2021')
+            downloadData(str(new_), '2021')
         except KeyboardInterrupt:
-            break
-        else:
+            exit(3)
+        except:
             print("Some Error occur when processing stock no. " + str(new_) +
                   ".")
     return
