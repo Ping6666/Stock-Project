@@ -50,11 +50,26 @@ def scoreRank(fileList):
         'StockClose': [i[2] for i in scoreList],
         'StockVolume': [i[3] for i in scoreList]
     })
+    buyList, sellList, volumeLimit = [], [], 5000
+    for i in scoreList:
+        if i[3] > volumeLimit:
+            if i[1] > 30:
+                buyList.append(i[0])
+            elif i[1] < -30:
+                sellList.append(i[0])
     fileName = '../' + '####' + '.TW.csv'  # 'postData/' +
     try:
         df.to_csv(fileName, index=False)
         print("Stock number " + '####' + "'s csv is completed.")
-        print("Stock score: higher than 30 can buy, lowwer than -30 can sell.")
+        print("The list below only show stock volume larger than " +
+              str(volumeLimit) + ".\n")
+        print("(Stock score >  30)  Buy list amount : " + str(len(buyList)) +
+              ".")
+        print(buyList)
+        print()
+        print("(Stock score < -30) Sell List amount : " + str(len(sellList)) +
+              ".")
+        print(sellList)
     except:
         print('Permission denied: ' + fileName +
               ".\nPlease close the file and repeat again.")
