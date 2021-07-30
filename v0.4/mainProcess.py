@@ -1,8 +1,8 @@
 import os, sys, getopt
-from dataCrawler_YahooFinance import *
 from preProcess import *
 from postProcess import *
-from visualizeData import *
+from visualizeData import visualizeStart
+from dataCrawler_YahooFinance import crawlerReadFile
 
 
 def main(argv):

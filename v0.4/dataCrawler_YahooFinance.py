@@ -1,5 +1,5 @@
-import os
-import requests
+import os, time, requests
+from fake_useragent import UserAgent
 import pandas as pd
 from io import StringIO
 from preProcess import *
@@ -22,10 +22,9 @@ from preProcess import *
 
 
 def downloadFromYahooSingle(stockNum, countryCode=''):
-    headers = {
-        'User-Agent':
-        'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.6) Gecko/20070802 SeaMonkey/1.1.4'
-    }
+    ua = UserAgent()
+    userAgent = ua.random
+    headers = {'User-Agent': userAgent}
     urlBase = (
         "https://query1.finance.yahoo.com/v7/finance/download/" +
         str(stockNum) + str(countryCode) +
@@ -66,7 +65,24 @@ def crawlerReadFile(fileName, countryCode=''):
         tmp_ = tmp.replace('\n', '')
         tmp_ = tmp_.split(' ')
         tmpList_.append(tmp_[0])
-    print("Will crawler the list:", tmpList_, ".")
+    print("Will crawler the list:", tmpList_, ". Total stock amount is",
+          len(tmpList_), ".")
+    timeWait = 5
     for i in tmpList_:
-        downloadFromYahooSingle(str(i), countryCode)
+        counter = 0
+        while True:
+            if counter >= 2:
+                break
+            try:
+                downloadFromYahooSingle(str(i), str(countryCode))
+            except KeyboardInterrupt:
+                exit()
+            except:
+                print("Fail when downloading stock no. " + str(i) +
+                      str(countryCode) + ". Retry in {}".format(timeWait) +
+                      " sec.")
+                time.sleep(timeWait)
+                counter = counter + 1
+            else:
+                break
     return
