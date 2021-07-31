@@ -1,6 +1,6 @@
 import os, sys, getopt
 from preProcess import *
-from postProcess import *
+from postProcess import postProcessPATH
 from visualizeData import visualizeStart
 from dataCrawler_YahooFinance import crawlerReadFile
 
@@ -33,12 +33,11 @@ def main(argv):
             # asp, html, csv and txt are for preProcess
             # but txt will use crawler to download data from yahoo finance
             # .TW is for visualize the data
-            if '.asp' in arg or '.html' in arg or '.csv' in arg or '.txt' in arg or '.TW' in arg:
+            if arg != '':
                 inputFile = arg
                 check = 1
             else:
-                print(
-                    "Input file need to be a asp or html or csv or txt file.")
+                print("Input file name need to be given.")
                 sys.exit(1)
         elif opt in ("-a", "--tFile"):
             # asp : pre download asp from goodinfo and process
@@ -62,10 +61,10 @@ def main(argv):
     if check > 0:
         if check == 1:
             if '.asp' in inputFile:
-                preProcessASP(inputFile)
+                preProcessASP(inputFile, ".TW")
                 postProcessPATH(fileBase2)
             elif '.html' in inputFile:
-                preProcessHTML(inputFile)
+                preProcessHTML(inputFile, ".TW")
                 postProcessPATH(fileBase2)
             elif '.txt' in inputFile:
                 crawlerReadFile(inputFile, ".TW")
@@ -77,7 +76,7 @@ def main(argv):
             # if '.csv' in inputFile:
             visualizeStart(fileBase2, inputFile, timeLength)
         elif check == 10:
-            preProcessPATH(fileBase1, inputFileType)
+            preProcessPATH(fileBase1, inputFileType, ".TW")
             postProcessPATH(fileBase2)
         elif check == 11:
             postProcessPATH(fileBase2)

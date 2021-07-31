@@ -26,7 +26,7 @@ def graphFromFile(fileBase, fileName, timeLength_):
     timeLength_ = min(timeLength_, len(df))
     df = df[-timeLength_:]
     dtAll = pd.date_range(start=df['Date'].iloc[0], end=df['Date'].iloc[-1])
-    dtAll = dtAll.strftime("%Y-%m-%d")
+    dtAll = dtAll.strftime("%Y/%m/%d")
     dtBreaks = [d for d in dtAll if d not in df['Date'].tolist()]
     # csv : Date, Open, High, Low, Close, Volume, KC, KD * RSI, 外資, 投信, 自營商, 外資持股比率, 股東持股分級
     ## start of fig

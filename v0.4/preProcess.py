@@ -4,7 +4,7 @@ import pandas as pd
 import ta
 
 
-def preProcessPATH(pathBase, fileType):
+def preProcessPATH(pathBase, fileType, countryCode=''):
     fileList = []
     for dirPath, dirNames, fileNames in os.walk(pathBase):
         for i, f in enumerate(fileNames):
@@ -13,15 +13,15 @@ def preProcessPATH(pathBase, fileType):
                 fileList.append(newFilePath)
     for newF in fileList:
         if '.asp' in newF:
-            preProcessASP(newF)
+            preProcessASP(newF, countryCode)
         elif '.html' in newF:
-            preProcessHTML(newF)
+            preProcessHTML(newF, countryCode)
         elif '.csv' in newF:
             preProcessCSV(newF)
     return
 
 
-def preProcessFromStock(stockDataFrame, stockNumber):
+def preProcessFromStock(stockDataFrame, stockName):
     # RSI, KD
     RSI = ta.momentum.RSIIndicator(close=stockDataFrame["Close"])
     KD = ta.momentum.StochasticOscillator(high=stockDataFrame["High"],
@@ -153,13 +153,13 @@ def preProcessFromStock(stockDataFrame, stockNumber):
         'SMA_240': resultList[5],
         'Score': Score
     })
-    fileName = '../postData/' + str(stockNumber) + '.TW.csv'
+    fileName = '../postData/' + str(stockName) + '.csv'
     dfNew_.to_csv(fileName, index=False)
-    print("Stock number " + str(stockNumber) + "'s csv is completed.")
+    print("Stock number " + str(stockName) + "'s csv is completed.")
     return
 
 
-def preProcessASP(inputFileName):
+def preProcessASP(inputFileName, countryCode):
     # inputFileName : ShowBuySaleChartData-stockNum.asp
     inputFileName_ = inputFileName.replace('.asp', '')
     inputList = inputFileName_.split('-')
@@ -239,29 +239,12 @@ def preProcessASP(inputFileName):
         'ForeignRatio': foreignRatioList_
     })
     # print("asp complete")
-    preProcessFromStock(dfNew, inputList[1])
+    stockName = str(inputList[1]) + str(countryCode)
+    preProcessFromStock(dfNew, stockName)
     return
 
 
-def preProcessTWSE_STOCKDAY(newList, stockNum):
-    # pd.DataFrame
-    dfNew = pd.DataFrame({
-        'Date': [i[0] for i in newList],
-        'Open': [float(i[1]) for i in newList],
-        'High': [float(i[2]) for i in newList],
-        'Low': [float(i[3]) for i in newList],
-        'Close': [float(i[4]) for i in newList],
-        'Volume': [float(i[5]) for i in newList],
-        'Foreign': [0] * len(newList),
-        'Trust': [0] * len(newList),
-        'Dealer': [0] * len(newList),
-        'ForeignRatio': [0] * len(newList)
-    })
-    preProcessFromStock(dfNew, stockNum)
-    return
-
-
-def preProcessHTML(inputFileName):
+def preProcessHTML(inputFileName, countryCode):
     # inputFileName : K_Chart-stockNum-yymmdd.html
     inputFileName_ = inputFileName.replace('.html', '')
     inputList = inputFileName_.split('-')
@@ -323,32 +306,76 @@ def preProcessHTML(inputFileName):
         'ForeignRatio': [float(i) for i in foreignRatioList]
     })
     # print("html complete")
-    preProcessFromStock(dfNew, inputList[1])
+    stockName = str(inputList[1]) + str(countryCode)
+    preProcessFromStock(dfNew, stockName)
     return
 
 
 def preProcessCSV(inputFileName):
-    # inputFileName : stockNum.TW.csv
-    inputFileName_ = inputFileName.replace('.TW.csv', '')
-    inputList = inputFileName_.split('/')
+    # inputFileName : stockNum.countryCode.csv, stockName.csv
+    inputFileName_ = inputFileName.replace('.csv', '')
+    stockName = inputFileName_.split('/')[-1]
+    # stockName = str(inputList[-1]) + str(countryCode)
     try:
         df = pd.read_csv(inputFileName)
     except:
         print("No such file or directory : " + inputFileName)
         return
+    try:
+        # pd.DataFrame
+        dfNew = pd.DataFrame({
+            'Date': df['Date'],
+            'Open': df['Open'],
+            'High': df['High'],
+            'Low': df['Low'],
+            'Close': df['Close'],
+            'Volume': df['Volume'],
+            'Foreign': df['Foreign'],
+            'Trust': df['Trust'],
+            'Dealer': df['Dealer'],
+            'ForeignRatio': df['ForeignRatio']
+        })
+    except:  # from yahoo finance
+        preProcessYahooFinance(df, stockName)
+        return
+    preProcessFromStock(dfNew, stockName)
+    return
+
+
+# Did not support anymore.
+"""
+def preProcessTWSE_STOCKDAY(newList, stockNum):
     # pd.DataFrame
     dfNew = pd.DataFrame({
-        'Date': df['Date'],
-        'Open': df['Open'],
-        'High': df['High'],
-        'Low': df['Low'],
-        'Close': df['Close'],
-        'Volume': df['Volume'],
-        'Foreign': df['Foreign'],
-        'Trust': df['Trust'],
-        'Dealer': df['Dealer'],
-        'ForeignRatio': df['ForeignRatio']
+        'Date': [i[0] for i in newList],
+        'Open': [float(i[1]) for i in newList],
+        'High': [float(i[2]) for i in newList],
+        'Low': [float(i[3]) for i in newList],
+        'Close': [float(i[4]) for i in newList],
+        'Volume': [float(i[5]) for i in newList],
+        'Foreign': [0] * len(newList),
+        'Trust': [0] * len(newList),
+        'Dealer': [0] * len(newList),
+        'ForeignRatio': [0] * len(newList)
     })
-    # print("html complete")
-    preProcessFromStock(dfNew, inputList[-1])
+    preProcessFromStock(dfNew, stockNum)
+    return
+"""
+
+
+def preProcessYahooFinance(dfNow, stockName):
+    dfNew = pd.DataFrame({
+        'Date': [i.replace('-', '/') for i in dfNow['Date']],
+        'Open': [float(i) if i != 'null' else 0 for i in dfNow['Open']],
+        'High': [float(i) if i != 'null' else 0 for i in dfNow['High']],
+        'Low': [float(i) if i != 'null' else 0 for i in dfNow['Low']],
+        'Close': [float(i) if i != 'null' else 0 for i in dfNow['Close']],
+        'Volume':
+        [float(i / 1000) if i != 'null' else 0 for i in dfNow['Volume']],
+        'Foreign': [0] * (len(dfNow['Date'])),
+        'Trust': [0] * (len(dfNow['Date'])),
+        'Dealer': [0] * (len(dfNow['Date'])),
+        'ForeignRatio': [0] * (len(dfNow['Date']))
+    })
+    preProcessFromStock(dfNew, stockName)
     return

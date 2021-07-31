@@ -2,18 +2,19 @@ import os, time, requests
 from fake_useragent import UserAgent
 import pandas as pd
 from io import StringIO
-from preProcess import *
+from preProcess import preProcessYahooFinance
 
-"https://query1.finance.yahoo.com/v7/finance/download/2330.TW?period1=946944000&period2=1627603200&interval=1d&events=history&includeAdjustedClose=true"
+# The sample of Yahoo Finance website url
+# "https://query1.finance.yahoo.com/v7/finance/download/2330.TW?period1=946944000&period2=1627603200&interval=1d&events=history&includeAdjustedClose=true"
 # 2330.TW
 # 2000/01/04 - 2021/07/30 (不含 07/30) : 6032 - 5168 = 864 (/天)
-"https://query1.finance.yahoo.com/v7/finance/download/2330.TW?period1=946944000&period2=1627516800&interval=1d&events=history&includeAdjustedClose=true"
+# "https://query1.finance.yahoo.com/v7/finance/download/2330.TW?period1=946944000&period2=1627516800&interval=1d&events=history&includeAdjustedClose=true"
 # 2330.TW
 # 2000/01/04 - 2021/07/29 (不含 07/29) : 5168 - 4304 = 864 (/天)
-"https://query1.finance.yahoo.com/v7/finance/download/2330.TW?period1=947030400&period2=1627430400&interval=1d&events=history&includeAdjustedClose=true"
+# "https://query1.finance.yahoo.com/v7/finance/download/2330.TW?period1=947030400&period2=1627430400&interval=1d&events=history&includeAdjustedClose=true"
 # 2330.TW
 # 2000/01/05 - 2021/07/28 (不含 07/28)
-"https://query1.finance.yahoo.com/v7/finance/download/3481.TW?period1=1161648000&period2=1627516800&interval=1d&events=history&includeAdjustedClose=true"
+# "https://query1.finance.yahoo.com/v7/finance/download/3481.TW?period1=1161648000&period2=1627516800&interval=1d&events=history&includeAdjustedClose=true"
 # 3481.TW
 # 2006/10/24 - 2021/07/29
 
@@ -36,20 +37,7 @@ def downloadFromYahooSingle(stockNum, countryCode=''):
     RCDecode = str(RC, 'utf-8', errors='ignore')
     rawData = StringIO(RCDecode)
     df = pd.read_csv(rawData)
-    dfNew = pd.DataFrame({
-        'Date': [i.replace('-', '/') for i in df['Date']],
-        'Open': [float(i) if i != 'null' else 0 for i in df['Open']],
-        'High': [float(i) if i != 'null' else 0 for i in df['High']],
-        'Low': [float(i) if i != 'null' else 0 for i in df['Low']],
-        'Close': [float(i) if i != 'null' else 0 for i in df['Close']],
-        'Volume':
-        [float(i / 1000) if i != 'null' else 0 for i in df['Volume']],
-        'Foreign': [0] * (len(df['Date'])),
-        'Trust': [0] * (len(df['Date'])),
-        'Dealer': [0] * (len(df['Date'])),
-        'ForeignRatio': [0] * (len(df['Date']))
-    })
-    preProcessFromStock(dfNew, stockNum)
+    preProcessYahooFinance(df, str(stockNum) + str(countryCode))
     return
 
 
@@ -67,7 +55,7 @@ def crawlerReadFile(fileName, countryCode=''):
         tmpList_.append(tmp_[0])
     print("Will crawler the list:", tmpList_, ". Total stock amount is",
           len(tmpList_), ".")
-    timeWait = 5
+    timeWait = 1
     for i in tmpList_:
         counter = 0
         while True:
