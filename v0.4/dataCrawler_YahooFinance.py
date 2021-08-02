@@ -22,7 +22,7 @@ from preProcess import preProcessYahooFinance
 # period2 可以給 大於最新日期 例如 2000000000 (代表輸出 需涵蓋最新資料)
 
 
-def downloadFromYahooSingle(stockNum, countryCode=''):
+def downloadFromYahoo_Single(stockNum, countryCode=''):
     ua = UserAgent()
     userAgent = ua.random
     headers = {'User-Agent': userAgent}
@@ -41,8 +41,52 @@ def downloadFromYahooSingle(stockNum, countryCode=''):
     return
 
 
+def downloadFromYahoo(crawlerList, countryCode=''):
+    timeWait, retryLimit = 1, 2
+    for i in crawlerList:
+        # set the countryCodeNow and stockName
+        if i.find('#') == 0 or i.find('/') == 0 or i == ' ' or i == '':
+            continue
+        elif i.find('.') >= 0 and len(i.split('.')) == 2:
+            countryCodeNow = '.' + i.split('.')[-1]
+            if countryCodeNow == '.':
+                countryCodeNow = ''
+            stockName = i.split('.')[0]
+            if stockName == '':
+                continue
+        else:
+            countryCodeNow = countryCode
+            stockName = i
+        # loop to ensure download process
+        for j in range(retryLimit):
+            try:
+                downloadFromYahoo_Single(str(stockName), str(countryCodeNow))
+            except KeyboardInterrupt:
+                exit()
+            except:
+                print("Fail when downloading stock no. " + str(stockName) +
+                      str(countryCodeNow) + ". Retry in {}".format(timeWait) +
+                      " sec.")
+                # for TWSE OTC
+                if countryCodeNow == '.TW':
+                    try:
+                        downloadFromYahoo_Single(str(stockName), '.TWO')
+                    except KeyboardInterrupt:
+                        exit()
+                    except:
+                        print("Fail when downloading stock no. " +
+                              str(stockName) +
+                              ".TWO. Retry in {}".format(timeWait) + " sec.")
+                    else:
+                        break
+                time.sleep(timeWait)
+            else:
+                break
+    return
+
+
 def crawlerReadFile(fileName, countryCode=''):
-    tmpList_ = []
+    tmpList_, downloadLimit = [], 695
     try:
         f = open(fileName, 'r', encoding='utf-8')
     except:
@@ -55,22 +99,9 @@ def crawlerReadFile(fileName, countryCode=''):
         tmpList_.append(tmp_[0])
     print("Will crawler the list:", tmpList_, ". Total stock amount is",
           len(tmpList_), ".")
-    timeWait = 1
-    for i in tmpList_:
-        counter = 0
-        while True:
-            if counter >= 2:
-                break
-            try:
-                downloadFromYahooSingle(str(i), str(countryCode))
-            except KeyboardInterrupt:
-                exit()
-            except:
-                print("Fail when downloading stock no. " + str(i) +
-                      str(countryCode) + ". Retry in {}".format(timeWait) +
-                      " sec.")
-                time.sleep(timeWait)
-                counter = counter + 1
-            else:
-                break
+    if len(tmpList_) > downloadLimit:
+        print("The download amount is larger than the limit:",
+              str(downloadLimit), ".")
+    f.close()
+    downloadFromYahoo(tmpList_, countryCode)
     return
