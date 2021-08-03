@@ -64,9 +64,6 @@ def downloadFromYahoo(crawlerList, countryCode=''):
             except KeyboardInterrupt:
                 exit()
             except:
-                print("Fail when downloading stock no. " + str(stockName) +
-                      str(countryCodeNow) + ". Retry in {}".format(timeWait) +
-                      " sec.")
                 # for TWSE OTC
                 if countryCodeNow == '.TW':
                     try:
@@ -75,23 +72,33 @@ def downloadFromYahoo(crawlerList, countryCode=''):
                         exit()
                     except:
                         print("Fail when downloading stock no. " +
-                              str(stockName) +
-                              ".TWO. Retry in {}".format(timeWait) + " sec.")
+                              str(stockName) + str(countryCodeNow) + " or " +
+                              str(stockName) + ".TWO. Retry in" +
+                              " {}".format(timeWait) + " sec.")
                     else:
                         break
+                else:
+                    print("Fail when downloading stock no. " + str(stockName) +
+                          str(countryCodeNow) +
+                          ". Retry in {}".format(timeWait) + " sec.")
                 time.sleep(timeWait)
             else:
                 break
     return
 
 
-def crawlerReadFile(fileName, countryCode=''):
+def crawlerReadFile(fileBase, fileName, countryCode=''):
     tmpList_, downloadLimit = [], 695
     try:
         f = open(fileName, 'r', encoding='utf-8')
     except:
-        print("No such file or directory : " + fileName)
-        exit(1)
+        try:
+            fullName = str(fileBase) + str(fileName)
+            f = open(fullName, 'r', encoding='utf-8')
+        except:
+            print("No such file or directory : " + fileName + " or " +
+                  fullName + ".")
+            exit(1)
     tmpList = f.readlines()
     for tmp in tmpList:
         tmp_ = tmp.replace('\n', '')

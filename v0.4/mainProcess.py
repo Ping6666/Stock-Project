@@ -17,7 +17,7 @@ def main(argv):
     outputStr2 = 'fileName with html : K_Chart-stockNum-yymmdd.html'
     outputStr3 = 'fileName with csv  : stockNum.csv'
     outputStr4 = 'fileName with txt  : stock.txt'
-    fileBase1, fileBase2 = '../rawData/', '../postData/'
+    fileBase1, fileBase2, fileBase3 = '../rawData/', '../postData/', '../stockNumber/'
     try:
         opts, args = getopt.getopt(argv, "h:a:pi:l:",
                                    ["iFile=", "tFile=", "lTime="])
@@ -67,7 +67,7 @@ def main(argv):
                 preProcessHTML(inputFile, ".TW")
                 postProcessPATH(fileBase2)
             elif '.txt' in inputFile:
-                crawlerReadFile(inputFile, ".TW")
+                crawlerReadFile(fileBase3, inputFile, '.TW')
                 postProcessPATH(fileBase2)
             elif '.csv' in inputFile:
                 preProcessCSV(inputFile)
