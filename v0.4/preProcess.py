@@ -1,6 +1,7 @@
 # this for pre-process from raw data and store into csv file format
 import os, sys
 import pandas as pd
+import numpy as np
 import ta
 
 
@@ -363,19 +364,46 @@ def preProcessTWSE_STOCKDAY(newList, stockNum):
 """
 
 
+def checkFloat(inputNum):
+    if inputNum != 'null' and not np.isnan(inputNum):
+        return True
+    return False
+    # try:
+    #     inputNum = float(inputNum)
+    # except:
+    #     print("inputNum")
+    #     return False
+    # return True
+
+
 def preProcessYahooFinance(dfNow, stockName):
+    # if '0050' in stockName:
+    #     print(dfNow['Open'].iloc[-2])
+    #     print(np.isnan(dfNow['Open'].iloc[-2]))
     dfNew = pd.DataFrame({
         'Date': [i.replace('-', '/') for i in dfNow['Date']],
-        'Open': [float(i) if i != 'null' else 0 for i in dfNow['Open']],
-        'High': [float(i) if i != 'null' else 0 for i in dfNow['High']],
-        'Low': [float(i) if i != 'null' else 0 for i in dfNow['Low']],
-        'Close': [float(i) if i != 'null' else 0 for i in dfNow['Close']],
+        'Open': [float(i) if checkFloat(i) else 0 for i in dfNow['Open']],
+        'High': [float(i) if checkFloat(i) else 0 for i in dfNow['High']],
+        'Low': [float(i) if checkFloat(i) else 0 for i in dfNow['Low']],
+        'Close': [float(i) if checkFloat(i) else 0 for i in dfNow['Close']],
         'Volume':
-        [float(i / 1000) if i != 'null' else 0 for i in dfNow['Volume']],
+        [float(i / 1000) if checkFloat(i) else 0 for i in dfNow['Volume']],
         'Foreign': [0] * (len(dfNow['Date'])),
         'Trust': [0] * (len(dfNow['Date'])),
         'Dealer': [0] * (len(dfNow['Date'])),
         'ForeignRatio': [0] * (len(dfNow['Date']))
     })
+    checker = []
+    for i in range(len(dfNew)):
+        if (dfNew['Open'].iloc[i] == 0 and dfNew['High'].iloc[i] == 0
+                and dfNew['Low'].iloc[i] == 0 and dfNew['Close'].iloc[i] == 0
+                and dfNew['Volume'].iloc[i] == 0):
+            checker.append(i)
+    if len(dfNew) - len(checker) <= 1:
+        # print("Data wrong at date no:", checker, ".")
+        print("Data wrong at date with the amount:", len(checker), ".")
+        print("Data that is closed TODAY was wrong.")
+    dfNew.drop(index=checker, inplace=True)
+    dfNew.reset_index(inplace=True, drop=True)
     preProcessFromStock(dfNew, stockName)
     return
