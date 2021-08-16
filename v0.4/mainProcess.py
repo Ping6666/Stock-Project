@@ -35,7 +35,10 @@ def main(argv):
             # .TW is for visualize the data
             if arg != '':
                 inputFile = arg
-                check = 1
+                if check == 2:
+                    check = check + 1
+                else:
+                    check = 1
             else:
                 print("Input file name need to be given.")
                 sys.exit(1)

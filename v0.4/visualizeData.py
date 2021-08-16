@@ -37,9 +37,15 @@ def graphFromFile(fileBase, fileName, timeLength_):
         row_heights=[0.4, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1],
         vertical_spacing=0.05,
         shared_xaxes=True,
-        subplot_titles=("Candlestick Charts", "Score (high: buy, low: sell)",
-                        "KD*RSI", "Ichimoku Indicator", "Volume",
-                        "Chip Aanalysis", "Foreign Chip Ratio"))
+        subplot_titles=(
+            "Candlestick Charts",
+            "Score (high: buy, low: sell)",
+            # "Trend Analysis (>0 漲勢, =0 平盤, <0 跌勢)",
+            "KD*RSI",
+            "Ichimoku Indicator",
+            "Volume",
+            "Chip Aanalysis",
+            "Foreign Chip Ratio"))
     # set 1st plot in the subplot - 1st line (Stock Price)
     fig.add_trace(
         go.Candlestick(x=df['Date'],
@@ -52,17 +58,17 @@ def graphFromFile(fileBase, fileName, timeLength_):
     fig.add_trace(
         go.Scatter(x=df['Date'],
                    y=df['KC_high'],
-                   name="KeltnerChannel-H",
+                   name="KC-H",
                    visible='legendonly'), 1, 1)
     fig.add_trace(
         go.Scatter(x=df['Date'],
                    y=df['KC_middle'],
-                   name="KeltnerChannel-M",
+                   name="KC-M",
                    visible='legendonly'), 1, 1)
     fig.add_trace(
         go.Scatter(x=df['Date'],
                    y=df['KC_low'],
-                   name="KeltnerChannel-L",
+                   name="KC-L",
                    visible='legendonly'), 1, 1)
     # set 1st plot in the subplot - 3nd line (MA)
     fig.add_trace(
@@ -94,6 +100,11 @@ def graphFromFile(fileBase, fileName, timeLength_):
                    visible='legendonly'), 1, 1)
     # set 2nd plot in the subplot
     fig.add_trace(go.Scatter(x=df['Date'], y=df['Score'], name="Score"), 2, 1)
+    fig.add_trace(
+        go.Scatter(x=df['Date'], y=df['Score_SMA_5'], name="Score SMA-5"), 2,
+        1)
+    # fig.add_trace(
+    #     go.Scatter(x=df['Date'], y=df['ScorePoint'], name="ScorePoint"), 2, 1)
     fig.add_shape(dict(type="line",
                        x0=0,
                        x1=timeLength_,
@@ -118,11 +129,14 @@ def graphFromFile(fileBase, fileName, timeLength_):
                        line_color="black"),
                   row=2,
                   col=1)
+    # set 3rd plot in the subplot - Trend Analysis
+    # fig.add_trace(go.Scatter(x=df['Date'], y=df['TrendAnalysis'], name="TA"),
+    #               3, 1)
+    # fig.add_trace(
+    #     go.Scatter(x=df['Date'], y=df['TrendAnalysisRaw'], name="TA-R"), 3, 1)
     # set 3rd plot in the subplot - KD*KSI
-    fig.add_trace(go.Scatter(x=df['Date'], y=df['K'], name="Stoch-K*RSI"), 3,
-                  1)
-    fig.add_trace(go.Scatter(x=df['Date'], y=df['D'], name="Stoch-D*RSI"), 3,
-                  1)
+    fig.add_trace(go.Scatter(x=df['Date'], y=df['K'], name="K*RSI"), 3, 1)
+    fig.add_trace(go.Scatter(x=df['Date'], y=df['D'], name="D*RSI"), 3, 1)
     fig.add_shape(dict(type="line",
                        x0=0,
                        x1=timeLength_,
@@ -141,17 +155,14 @@ def graphFromFile(fileBase, fileName, timeLength_):
                   col=1)
     # set 4th plot in the subplot - Ichimoku Clouds
     fig.add_trace(
-        go.Scatter(x=df['Date'],
-                   y=df['ICH_plot_1'],
-                   name="ICH - Rise Potential"), 4, 1)
+        go.Scatter(x=df['Date'], y=df['ICH_plot_1'], name="Rise_Potential"), 4,
+        1)
     fig.add_trace(
-        go.Scatter(x=df['Date'],
-                   y=df['ICH_plot_2'],
-                   name="ICH - Cloud Protection"), 4, 1)
+        go.Scatter(x=df['Date'], y=df['ICH_plot_2'], name="Cloud_Protection"),
+        4, 1)
     fig.add_trace(
-        go.Scatter(x=df['Date'],
-                   y=df['ICH_plot_3'],
-                   name="ICH - Cloud Distance"), 4, 1)
+        go.Scatter(x=df['Date'], y=df['ICH_plot_3'], name="Cloud_Distance"), 4,
+        1)
     fig.add_shape(dict(type="line",
                        x0=0,
                        x1=timeLength_,
@@ -175,12 +186,12 @@ def graphFromFile(fileBase, fileName, timeLength_):
             minNum = i
     fig.add_trace(go.Bar(x=df['Date'], y=df['ForeignRatio'], name="Chip"), 7,
                   1)
-    fig.update_yaxes(range=[(minNum - 0.25), (maxNum + 0.25)], row=7, col=1)
-    # set 8th plot in the subplot - 籌碼分析 - 股東持股分級週統計圖
-    # fig.add_trace(go.Bar(x=df['Date'], y="股東持股分級", name="Chip"), 8, 1)
+    fig.update_yaxes(range=[(minNum - 0.25), (maxNum + 0.25)], row=8, col=1)
+    # set 9th plot in the subplot - 籌碼分析 - 股東持股分級週統計圖
+    # fig.add_trace(go.Bar(x=df['Date'], y="股東持股分級", name="Chip"), 9, 1)
     # set the layout of the subplot
     fig.update_layout(title_text=showingName + "'s stock price visualization",
-                      height=1200,
+                      height=1500,
                       width=1500,
                       legend=dict(orientation="h",
                                   yanchor="bottom",
