@@ -102,8 +102,10 @@ def crawlerReadFile(fileBase, fileName, countryCode=''):
     tmpList = f.readlines()
     for tmp in tmpList:
         tmp_ = tmp.replace('\n', '')
-        tmp_ = tmp_.split(' ')
-        tmpList_.append(tmp_[0])
+        tmp_ = tmp_.split(' ')[0]
+        if tmp_.find('\t') != 0:
+            tmp_ = tmp_.split('\t')[0]
+        tmpList_.append(tmp_)
     print("Will crawler the list:", tmpList_, ". Total stock amount is",
           len(tmpList_), ".")
     if len(tmpList_) > downloadLimit:

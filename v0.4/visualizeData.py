@@ -23,6 +23,25 @@ def graphFromFile(fileBase, fileName, timeLength_):
     except:
         print("No such file or directory : " + fileName)
         exit(1)
+    # take out the chinese name of cc = TW stock
+    stockNameList = '../stockNumber/TW_all.txt'
+    if showingName.find('.TW') != 0:
+        try:
+            f = open(stockNameList, 'r', encoding='utf-8')
+        except:
+            print("No such file or directory : " + stockNameList + ".")
+        tmpList = f.readlines()
+        tmpList_ = []
+        for tmp in tmpList:
+            tmp_ = tmp.replace('\n', '')
+            tmp_ = tmp_.split(' ')[0]
+            tmpList_.append(tmp_)
+        f.close()
+        stockNumber = showingName.split('.')[0]
+        for i in range(len(tmpList_)):
+            if stockNumber in (tmpList_[i].split('\t')[0]):
+                showingName = tmpList_[i].split('\t')[-1] + " " + showingName
+                break
     timeLength_ = min(timeLength_, len(df))
     df = df[-timeLength_:]
     dtAll = pd.date_range(start=df['Date'].iloc[0], end=df['Date'].iloc[-1])
