@@ -43,6 +43,11 @@ def graphFromFile(fileBase, fileName, timeLength_):
                 showingName = tmpList_[i].split('\t')[-1] + " " + showingName
                 break
     timeLength_ = min(timeLength_, len(df))
+    # for check volume low point
+    checkLen = 60
+    timeLengthTmp = min(timeLength_ + checkLen + 1, len(df))
+    df_ = df[-timeLengthTmp:]
+    # end
     df = df[-timeLength_:]
     dtAll = pd.date_range(start=df['Date'].iloc[0], end=df['Date'].iloc[-1])
     dtAll = dtAll.strftime("%Y/%m/%d")
@@ -148,6 +153,47 @@ def graphFromFile(fileBase, fileName, timeLength_):
                        line_color="black"),
                   row=2,
                   col=1)
+    totalLen1, totalLen2 = len(df['Date']), len(df_['Date'])
+    for i in range(totalLen1):
+        if i == totalLen1 - 1:
+            continue
+        if i < totalLen2:
+            checkNowLow = df_['Volume'].iloc[-i - 1]
+            if checkNowLow != 0:
+                checkResult = True
+                for j in range(checkLen - 1):
+                    j_ = j + 1
+                    checkTmp = 0
+                    if i + j_ < totalLen2 and checkResult:
+                        checkTmp = df_['Volume'].iloc[-i - 1 - j_]
+                        if checkTmp != 0 and checkTmp < checkNowLow:
+                            # Bad
+                            checkResult = False
+                if checkResult:
+                    fig.add_vline(x=df_['Date'].iloc[-i - 1],
+                                  line_width=1,
+                                  line_dash="dash",
+                                  line_color="green",
+                                  row=2,
+                                  col=1)
+            checkNowHigh = df_['Volume'].iloc[-i - 1]
+            if checkNowHigh != 0:
+                checkResult = True
+                for j in range(checkLen - 1):
+                    j_ = j + 1
+                    checkTmp = 0
+                    if i + j_ < totalLen2 and checkResult:
+                        checkTmp = df_['Volume'].iloc[-i - 1 - j_]
+                        if checkTmp != 0 and checkTmp > checkNowHigh:
+                            # Bad
+                            checkResult = False
+                if checkResult:
+                    fig.add_vline(x=df_['Date'].iloc[-i - 1],
+                                  line_width=1,
+                                  line_dash="dash",
+                                  line_color="red",
+                                  row=2,
+                                  col=1)
     # set 3rd plot in the subplot - Trend Analysis
     # fig.add_trace(go.Scatter(x=df['Date'], y=df['TrendAnalysis'], name="TA"),
     #               3, 1)
