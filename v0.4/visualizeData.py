@@ -68,7 +68,7 @@ def graphFromFile(fileBase, fileName, timeLength_):
             "KD*RSI",
             "Ichimoku Indicator",
             "Volume",
-            "Chip Aanalysis",
+            "Chip Analysis",
             "Foreign Chip Ratio"))
     # set 1st plot in the subplot - 1st line (Stock Price)
     fig.add_trace(
