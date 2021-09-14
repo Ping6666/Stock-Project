@@ -1,3 +1,37 @@
+^TWII.	台股上市大盤
+^TWOII.	台股上櫃大盤
+
+^TCMI.	水泥
+^TFII.	食品
+^TPLI.	塑膠
+^TTII.	紡織
+^TMAI.	電機機械
+^TEEI.	電器電纜
+^TGLI.	玻璃
+^TPAI.	造紙
+^TSTI.	鋼鐵
+^TRUI.	橡膠
+^TAUI.	汽車
+^TELI.	電子
+^TCOI.	營建
+^TTPI.	航運
+^THOI.	觀光
+^TFNI.	金融
+^TDEI.	貿易百貨
+CHI.TW	化學
+BIM.TW	生技醫療
+SEC.TW	半導體
+CPE.TW	電腦週邊
+OPE.TW	光電
+COI.TW	通信網路
+EPC.TW	電子零組件
+EPD.TW	電子通路
+INS.TW	資訊服務
+OTE.TW	其他電子
+OGE.TW	油電燃氣
+^TOTI.	其他
+^TOEI.	上市不含金融電子
+
 0050	元大台灣50
 0051	元大中型100
 0052	富邦科技
