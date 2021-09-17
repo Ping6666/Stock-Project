@@ -75,6 +75,8 @@ def main(argv):
             elif '.csv' in inputFile:
                 preProcessCSV(inputFile)
                 postProcessPATH(fileBase2)
+        elif check == 2:
+            visualizeStart(fileBase2, '', timeLength, 1)
         elif check == 3:
             # if '.csv' in inputFile:
             visualizeStart(fileBase2, inputFile, timeLength)

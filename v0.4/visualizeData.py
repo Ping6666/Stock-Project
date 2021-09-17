@@ -1,4 +1,5 @@
 # take out data from csv file and then visualize the data
+import os, sys
 import pandas as pd
 from datetime import datetime
 
@@ -272,13 +273,57 @@ def graphFromFile(fileBase, fileName, timeLength_):
     return fig
 
 
-def visualizeStart(fileBase, fileName, length):
-    # start app setting
-    app = dash.Dash(__name__)
-    fig_ = graphFromFile(fileBase, fileName, length)
-    app.layout = html.Div(
-        [dcc.Graph(figure=fig_, config={'displayModeBar': False})])
-    # For Development only, otherwise use gunicorn or uwsgi to launch, e.g.
-    # gunicorn -b 0.0.0.0:8050 index:app.server
-    app.run_server(port=8080, host='127.0.0.1', debug=False)
+def visualizePATH(fileBase, fileType='.csv'):
+    fileList = []
+    for dirPath, dirNames, fileNames in os.walk(fileBase):
+        for i, f in enumerate(fileNames):
+            if fileType in f:
+                f_ = f.replace('.csv', '')
+                fileList.append(f_)
+    # print(fileList)
+    return fileList
+
+
+def visualizeStart(fileBase, fileName, length, dir=0):
+    # dir: 0 is a file, otherwise is a folder (fileName no need)
+    fileList_ = []
+    if dir != 0:
+        fileList_ = visualizePATH(fileBase)
+
+        # start app setting
+        app = dash.Dash(__name__)
+        fig_ = go.Figure()
+        app.layout = html.Div([
+            dcc.Dropdown(id='dropdown',
+                         options=[{
+                             'label': name,
+                             'value': name
+                         } for name in fileList_],
+                         value='stockName'),
+            dcc.Graph(id="plot", figure=fig_, config={'displayModeBar': False})
+        ])
+
+        @app.callback(Output('plot', 'figure'), [Input('dropdown', 'value')])
+        def graphCallback(fileName):
+            if fileName == 'stockName':
+                fileName = fileList_[0]
+            elif fileName == None:
+                fileName = ''
+            fig = graphFromFile(fileBase, fileName, length)
+            return fig
+
+        # For Development only, otherwise use gunicorn or uwsgi to launch, e.g.
+        # gunicorn -b 0.0.0.0:8050 index:app.server
+        app.run_server(port=8080, host='127.0.0.1', debug=False)
+    else:
+        # start app setting
+        app = dash.Dash(__name__)
+
+        fig_ = graphFromFile(fileBase, fileName, length)
+        app.layout = html.Div(
+            [dcc.Graph(figure=fig_, config={'displayModeBar': False})])
+
+        # For Development only, otherwise use gunicorn or uwsgi to launch, e.g.
+        # gunicorn -b 0.0.0.0:8050 index:app.server
+        app.run_server(port=8080, host='127.0.0.1', debug=False)
     return
