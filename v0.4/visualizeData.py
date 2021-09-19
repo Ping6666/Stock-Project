@@ -281,7 +281,28 @@ def visualizePATH(fileBase, fileType='.csv'):
                 f_ = f.replace('.csv', '')
                 fileList.append(f_)
     # print(fileList)
-    return fileList
+    stockNameList = '../stockNumber/TW_all.txt'
+    try:
+        f = open(stockNameList, 'r', encoding='utf-8')
+    except:
+        print("No such file or directory : " + stockNameList + ".")
+    tmpList = f.readlines()
+    tmpList_ = []
+    for tmp in tmpList:
+        tmp_ = tmp.replace('\n', '')
+        tmp_ = tmp_.split(' ')[0]
+        tmpList_.append(tmp_)
+    f.close()
+    fileListwithName = []
+    for fileList_ in fileList:
+        name = ''
+        stockNumber = fileList_.split('.')[0]
+        for i in range(len(tmpList_)):
+            if stockNumber in (tmpList_[i].split('\t')[0]):
+                name = tmpList_[i].split('\t')[-1]
+                break
+        fileListwithName.append([fileList_, name])
+    return fileListwithName
 
 
 def visualizeStart(fileBase, fileName, length, dir=0):
@@ -296,8 +317,8 @@ def visualizeStart(fileBase, fileName, length, dir=0):
         app.layout = html.Div([
             dcc.Dropdown(id='dropdown',
                          options=[{
-                             'label': name,
-                             'value': name
+                             'label': str(name[1] + " " + name[0]),
+                             'value': str(name[0])
                          } for name in fileList_],
                          value='stockName'),
             dcc.Graph(id="plot", figure=fig_, config={'displayModeBar': False})
@@ -306,7 +327,7 @@ def visualizeStart(fileBase, fileName, length, dir=0):
         @app.callback(Output('plot', 'figure'), [Input('dropdown', 'value')])
         def graphCallback(fileName):
             if fileName == 'stockName':
-                fileName = fileList_[0]
+                fileName = fileList_[0][0]
             elif fileName == None:
                 fileName = ''
             fig = graphFromFile(fileBase, fileName, length)
