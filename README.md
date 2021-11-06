@@ -9,11 +9,12 @@ Use Plotly to show the data from CSV file.
 ## Necessary Packages
 
 - `ta` == 0.7.0
+  - `pandas` == 1.2.4
+  - `numpy` == 1.20.3
 - `dash` == 1.20.0
-- `lxml` == 4.6.3
-- `pandas` == 1.2.4
-- `numpy` == 1.20.3
 - `requests` == 2.26.0
+- `fake_useragent` == 0.1.11
+- `lxml` == 4.6.3
 
 ## Web Crawl Source
 
