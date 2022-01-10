@@ -1,3 +1,5 @@
+# version: 0.5
+
 import os, time, requests
 from fake_useragent import UserAgent
 import pandas as pd
