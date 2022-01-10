@@ -1,3 +1,5 @@
+# version: 0.1
+
 import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -6,7 +8,7 @@ import time
 
 def downloadData(stockID, year):
     time.sleep(10)
-    FilePath_ = "D:/Programming/StockProject/code/v0.1_Crawler/chromedriver.exe"
+    FilePath_ = "D:/Programming/StockProject/code/src/chromedriver.exe"
     urlOriginal_ = "https://goodinfo.tw/StockInfo/ShowK_Chart.asp?STOCK_ID=" + str(
         stockID) + "&CHT_CAT2=DATE"
     # Options
