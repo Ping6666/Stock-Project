@@ -1,9 +1,12 @@
+# version: 0.5
+
 # take out data from csv file and then visualize the data
 import os, sys
 import pandas as pd
 from datetime import datetime
 
 import dash
+# from dash import dcc, html
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
@@ -11,6 +14,8 @@ from dash.dependencies import Input, Output
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+
+import flask
 
 
 def graphFromFile(fileBase, fileName, timeLength_):
@@ -280,6 +285,7 @@ def visualizePATH(fileBase, fileType='.csv'):
             if fileType in f:
                 f_ = f.replace('.csv', '')
                 fileList.append(f_)
+    fileList.sort()
     # print(fileList)
     stockNameList = '../stockNumber/TW_all.txt'
     try:
@@ -305,46 +311,59 @@ def visualizePATH(fileBase, fileType='.csv'):
     return fileListwithName
 
 
-def visualizeStart(fileBase, fileName, length, dir=0):
-    # dir: 0 is a file, otherwise is a folder (fileName no need)
-    fileList_ = []
-    if dir != 0:
-        fileList_ = visualizePATH(fileBase)
+# def visualizeStart(__name__, fileBase, fileName, length, dir=0):
+fileBase = '../postData/'
+timeLength = [45, 60, 90, 120, 240, 360, 480, 600]
 
-        # start app setting
-        app = dash.Dash(__name__)
-        fig_ = go.Figure()
-        app.layout = html.Div([
-            dcc.Dropdown(id='dropdown',
-                         options=[{
-                             'label': str(name[1] + " " + name[0]),
-                             'value': str(name[0])
-                         } for name in fileList_],
-                         value='stockName'),
-            dcc.Graph(id="plot", figure=fig_, config={'displayModeBar': False})
-        ])
+# start app setting
+app = flask.Flask(__name__)
+dashapp = dash.Dash(__name__,
+                    server=app,
+                    routes_pathname_prefix='/stock/',
+                    requests_pathname_prefix='/stock/')
 
-        @app.callback(Output('plot', 'figure'), [Input('dropdown', 'value')])
-        def graphCallback(fileName):
-            if fileName == 'stockName':
-                fileName = fileList_[0][0]
-            elif fileName == None:
-                fileName = ''
-            fig = graphFromFile(fileBase, fileName, length)
-            return fig
+fig_ = go.Figure()
+dashapp.layout = html.Div([
+    dcc.Dropdown(id='stock-list', options=[], value=0),
+    dcc.Slider(
+        id='time-length',
+        min=timeLength[0],
+        max=timeLength[-1],
+        value=timeLength[1],  # default: 60
+        marks={str(time_): str(time_)
+               for time_ in timeLength},
+        step=None),
+    dcc.Graph(id="plot", figure=fig_, config={'displayModeBar': False})
+])
 
-        # For Development only, otherwise use gunicorn or uwsgi to launch, e.g.
-        # gunicorn -b 0.0.0.0:8050 index:app.server
-        app.run_server(port=8080, host='127.0.0.1', debug=False)
-    else:
-        # start app setting
-        app = dash.Dash(__name__)
 
-        fig_ = graphFromFile(fileBase, fileName, length)
-        app.layout = html.Div(
-            [dcc.Graph(figure=fig_, config={'displayModeBar': False})])
+@dashapp.callback(
+    [Output('stock-list', 'options'),
+     Output('stock-list', 'value')],
+    [Input('stock-list', 'options'),
+     Input('stock-list', 'value')])
+def dropdownListRefresh(nowfileList, nowvalue):
+    newfileList = visualizePATH(fileBase)
+    newoptions_ = [{
+        'label': str(name[1] + " " + name[0]),
+        'value': str(name[0])
+    } for name in newfileList]
+    if len(nowfileList) == 0:
+        return newoptions_, newoptions_[0]['value']
+    return newoptions_, nowvalue
 
-        # For Development only, otherwise use gunicorn or uwsgi to launch, e.g.
-        # gunicorn -b 0.0.0.0:8050 index:app.server
-        app.run_server(port=8080, host='127.0.0.1', debug=False)
-    return
+
+@dashapp.callback(
+    Output('plot', 'figure'),
+    [Input('stock-list', 'value'),
+     Input('time-length', 'value')])
+def graphCallback(fileName, length):
+    if fileName == None:
+        fileName = ''
+    fig = graphFromFile(fileBase, fileName, length)
+    return fig
+
+
+if __name__ == '__main__':
+    print("Start flask without uwsgi, nginx, supervisor.")
+    app.run()
