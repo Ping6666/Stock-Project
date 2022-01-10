@@ -1,3 +1,5 @@
+# version: 0.5
+
 # this for pre-process from raw data and store into csv file format
 import os, sys
 import pandas as pd
