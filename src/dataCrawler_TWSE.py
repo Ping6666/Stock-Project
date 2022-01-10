@@ -1,3 +1,5 @@
+# version: 0.1
+
 # import os, sys, getopt
 import time, requests
 import pandas as pd
@@ -5,26 +7,26 @@ from io import StringIO
 from ..main.preProcess import *
 
 # 瀏覽網址
-"https://www.twse.com.tw/zh/page/trading/exchange/STOCK_DAY.html"
+# "https://www.twse.com.tw/zh/page/trading/exchange/STOCK_DAY.html"
 # 下載網址
-"https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=csv&date=20210701&stockNo=2330"
+# "https://www.twse.com.tw/exchangeReport/STOCK_DAY?response=csv&date=20210701&stockNo=2330"
 # 110年07月 2330 台積電 (月/檔案)
 # date = yyyymm01
 # stockNo = number
 # 99年1月4日 起開始提供 (20100101)
 
 # 瀏覽網址
-"https://www.twse.com.tw/zh/page/trading/exchange/BFIAMU.html"
+# "https://www.twse.com.tw/zh/page/trading/exchange/BFIAMU.html"
 # 下載網址
-"https://www.twse.com.tw/exchangeReport/BFIAMU?response=csv&date=20210728"
+# "https://www.twse.com.tw/exchangeReport/BFIAMU?response=csv&date=20210728"
 # 110年07月28日各類指數日成交量值 (日/檔案)
 # date = yyyymmdd
 # 93年7月9日 起開始提供 (未開市則無資料)
 
 # 瀏覽網址
-"https://www.twse.com.tw/zh/page/trading/exchange/BWIBBU.html"
+# "https://www.twse.com.tw/zh/page/trading/exchange/BWIBBU.html"
 # 下載網址
-"https://www.twse.com.tw/exchangeReport/BWIBBU?response=csv&date=20210701&stockNo=2330"
+# "https://www.twse.com.tw/exchangeReport/BWIBBU?response=csv&date=20210701&stockNo=2330"
 # 110年07月 2330 台積電 個股日本益比、殖利率及股價淨值比 (月/檔案)
 # date = yyyymm01
 # stockNo = number
