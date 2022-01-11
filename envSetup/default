@@ -1,0 +1,33 @@
+upstream mysite{
+    server unix:///home/ping/www/my_stock_site.sock;
+    # server 192.168.164.1:8080;
+}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    # listen 443 ssl default_server;
+    # listen [::]:443 ssl default_server;
+
+    # ssl_certificate /etc/nginx/ssl/nginx.crt;
+    # ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+    server_name 192.168.164.1; # ip
+
+    charset  utf-8;
+    gzip on;
+    gzip_types text/plain application/x-javascript text/css text/javascript application/x-httpd-php application/json text/json image/jpeg image/gif image/png application/octet-stream;
+
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    proxy_redirect off;
+    proxy_buffering off;
+
+    location / {
+        uwsgi_pass mysite;
+        include /etc/nginx/uwsgi_params;
+    }
+}
