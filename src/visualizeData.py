@@ -317,10 +317,12 @@ timeLength = [45, 60, 90, 120, 240, 360, 480, 600]
 
 # start app setting
 app = flask.Flask(__name__)
-dashapp = dash.Dash(__name__,
-                    server=app,
-                    routes_pathname_prefix='/stock/',
-                    requests_pathname_prefix='/stock/')
+dashapp = dash.Dash(
+    __name__,
+    server=app,
+    # routes_pathname_prefix='/stock/',
+    # requests_pathname_prefix='/stock/'
+)
 
 fig_ = go.Figure()
 dashapp.layout = html.Div([
