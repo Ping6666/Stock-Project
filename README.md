@@ -64,7 +64,7 @@ If you are trying to use this code against the copyright law where you are or th
 1. mainProcess.py [-a fileType] [-p] [-i fileName]
 2. visualizeData.py
 
-### `mainProcess.py -a {%fileName}`
+### `mainProcess.py -a {%fileType}`
 
 pre-process all files which is either `.asp`, `.html` or `.csv` and in base file dir (`../rawData/`)
 
