@@ -16,11 +16,14 @@ Use Plotly to show the data from CSV file.
 
 #### first time
 
-0. At the beginning, plz read carefully through `mysetup.sh`, then change **IP** and other settings.
-1. run `bash /.../mysetup.sh`
-2. run `bash /.../stopsupervisor.sh`
-3. `sudo supervisorctl start mysite:*`
-4. run `bash /.../stopsupervisor.sh` again
+1. At the beginning, plz read carefully through `.../envSetup/mysetup.sh`
+2. then change **IP** and other settings
+3. run `bash .../envSetup/mysetup.sh`
+
+#### renew dataset
+
+1. set stockFiles in `./src/myAssignment.py` and txt under dir `./stockNumber/`
+2. run `bash .../envSetup/mydatacrawler.sh`
 
 #### start supervisor (with starting nginx and uwsgi)
 
@@ -30,7 +33,7 @@ use browser goto ip, then have fun
 
 #### stop supervisor (with ending nginx and uwsgi)
 
-run `bash /.../stopsupervisor.sh`
+run `bash .../envSetup/stopsupervisor.sh`
 
 ## Web Crawl Source
 
