@@ -3,7 +3,10 @@
 # take out data from csv file and then visualize the data
 import os, sys
 import pandas as pd
+import numpy as np
 from datetime import datetime
+
+pd.options.display.float_format = '{:.3f}'.format
 
 import dash
 # from dash import dcc, html
@@ -16,6 +19,8 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 import flask
+
+from datetime import date
 
 
 def graphFromFile(fileBase, fileName, timeLength_):
@@ -261,17 +266,19 @@ def graphFromFile(fileBase, fileName, timeLength_):
     # set 9th plot in the subplot - 籌碼分析 - 股東持股分級週統計圖
     # fig.add_trace(go.Bar(x=df['Date'], y="股東持股分級", name="Chip"), 9, 1)
     # set the layout of the subplot
-    fig.update_layout(title_text=showingName + "'s stock price visualization",
-                      height=1500,
-                      width=1500,
-                      legend=dict(orientation="h",
-                                  yanchor="bottom",
-                                  y=-0.15,
-                                  xanchor="right",
-                                  x=1),
-                      xaxis_rangeslider_visible=False,
-                      barmode='relative',
-                      hovermode='x')
+    fig.update_layout(
+        title_text=showingName +
+        "'s stock price visualization <a href='/score'> Visualize Stock Score </a>",
+        height=1500,
+        width=1500,
+        legend=dict(orientation="h",
+                    yanchor="bottom",
+                    y=-0.15,
+                    xanchor="right",
+                    x=1),
+        xaxis_rangeslider_visible=False,
+        barmode='relative',
+        hovermode='x')
     # remove empty from date list
     fig.update_xaxes(rangebreaks=[dict(values=dtBreaks)], showticklabels=False)
     ## end of fig
@@ -320,6 +327,8 @@ app = flask.Flask(__name__)
 dashapp = dash.Dash(
     __name__,
     server=app,
+    title="Visualize Stock",
+    url_base_pathname='/stock/',
     # routes_pathname_prefix='/stock/',
     # requests_pathname_prefix='/stock/'
 )
@@ -331,7 +340,10 @@ dashapp.layout = html.Div([
         id='time-length',
         min=timeLength[0],
         max=timeLength[-1],
-        value=timeLength[1],  # default: 60
+        # default timeLength[2]: 90 days
+        # -> 18 weeks, about 5 months
+        # => 12 weeks, about 3 months, 1 quarter
+        value=timeLength[2],
         marks={str(time_): str(time_)
                for time_ in timeLength},
         step=None),
@@ -364,6 +376,29 @@ def graphCallback(fileName, length):
         fileName = ''
     fig = graphFromFile(fileBase, fileName, length)
     return fig
+
+
+@app.route('/score')
+def scorepage():
+    _pg_title = 'Visualize Stock Score'
+    _pg_date = date.today()
+    _pg_body = ''
+    try:
+        _pg_tables_data = pd.read_csv('../TotalScoreList.csv',
+                                      dtype={'num_followers': np.int64})
+    except:
+        _pg_tables_data = ''
+    _pg_tables = [_pg_tables_data.to_html()]
+    return flask.render_template('table.html',
+                                 pg_title=_pg_title,
+                                 pg_date=_pg_date,
+                                 pg_body=_pg_body,
+                                 pg_tables=_pg_tables)
+
+
+@app.errorhandler(Exception)
+def errorredir(e):
+    return flask.render_template('redir.html', pg_title='redir...')
 
 
 if __name__ == '__main__':
