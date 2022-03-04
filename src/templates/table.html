@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title> {{ pg_title }} </title>
+</head>
+
+<body>
+    {% if pg_date %}
+    <h1>Score Table on date: {{ pg_date }}. <a href="../stock"> return to home page</a> </h1>
+    {% else %}
+    <h1> <a href=".."> return to home page</a> </h1>
+    {% endif %} {{ pg_body }} {% for pg_table in pg_tables %} {{ pg_table | safe }} {% endfor %}
+</body>
+
+</html>
