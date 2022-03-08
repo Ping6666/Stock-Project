@@ -50,7 +50,7 @@ def graphFromFile(fileBase, fileName, timeLength_):
         f.close()
         stockNumber = showingName.split('.')[0]
         for i in range(len(tmpList_)):
-            if stockNumber in (tmpList_[i].split('\t')[0]):
+            if stockNumber == (tmpList_[i].split('\t')[0]):
                 showingName = tmpList_[i].split('\t')[-1] + " " + showingName
                 break
     timeLength_ = min(timeLength_, len(df))
@@ -311,7 +311,7 @@ def visualizePATH(fileBase, fileType='.csv'):
         name = ''
         stockNumber = fileList_.split('.')[0]
         for i in range(len(tmpList_)):
-            if stockNumber in (tmpList_[i].split('\t')[0]):
+            if stockNumber == (tmpList_[i].split('\t')[0]):
                 name = tmpList_[i].split('\t')[-1]
                 break
         fileListwithName.append([fileList_, name])
