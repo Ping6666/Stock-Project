@@ -24,9 +24,30 @@ def postProcessCSV(fileName):
         print("No such file or directory : " + fileName)
         return None
     thisList = []
-    # stock number
+    # stock name
     fileName_ = fileName.replace('.csv', '')
     stockNum = fileName_.split('/')
+    showingName = ''
+    stockNameList = '../stockNumber/TW_all.txt'
+    try:
+        f = open(stockNameList, 'r', encoding='utf-8')
+    except:
+        print("No such file or directory : " + stockNameList + ".")
+        return None
+    tmpList = f.readlines()
+    tmpList_ = []
+    for tmp in tmpList:
+        tmp_ = tmp.replace('\n', '')
+        tmp_ = tmp_.split(' ')[0]
+        tmpList_.append(tmp_)
+    f.close()
+    stockNumber = stockNum[-1].split('.')[0]
+    for i in range(len(tmpList_)):
+        if stockNumber == (tmpList_[i].split('\t')[0]):
+            showingName = tmpList_[i].split('\t')[-1]
+            break
+    thisList.append(showingName)
+    # stock number
     thisList.append(stockNum[-1])
     # stock score
     scoreNow = df['Score'].iloc[len(df['Score']) - 1]
@@ -53,39 +74,41 @@ def scoreRank(fileList):
             newList = postProcessCSV(newF)
             if newList != None:
                 scoreList.append(newList)
-    scoreList = sorted(scoreList, key=lambda l: l[1], reverse=True)
+    scoreList = sorted(scoreList, key=lambda l: l[2], reverse=True)
     if checker == 0:
         df = pd.DataFrame({
-            'StockNumber': [i[0] for i in scoreList],
-            'StockScore': [i[1] for i in scoreList],
-            'StockClose': [i[2] for i in scoreList],
-            'StockVolume': [i[3] for i in scoreList]
+            'StockName': [i[0] for i in scoreList],
+            'StockNumber': [i[1] for i in scoreList],
+            'StockScore': [i[2] for i in scoreList],
+            'StockClose': [i[3] for i in scoreList],
+            'StockVolume': [i[4] for i in scoreList]
         })
     else:
         df = pd.DataFrame({
-            'StockNumber': [i[0] for i in scoreList],
-            'StockScore': [i[1] for i in scoreList],
-            'StockScorePoint': [i[2] for i in scoreList],
-            'StockClose': [i[3] for i in scoreList],
-            'StockVolume': [i[4] for i in scoreList]
+            'StockName': [i[0] for i in scoreList],
+            'StockNumber': [i[1] for i in scoreList],
+            'StockScore': [i[2] for i in scoreList],
+            'StockScorePoint': [i[3] for i in scoreList],
+            'StockClose': [i[4] for i in scoreList],
+            'StockVolume': [i[5] for i in scoreList]
         })
     buyList, sellList, volumeLimit = [], [], 5000
     if checker == 0:
         # ** only for score **
         for i in scoreList:
-            if i[3] > volumeLimit:
-                if i[1] >= 30:
-                    buyList.append(i[0])
-                elif i[1] <= -30:
-                    sellList.append(i[0])
+            if i[4] > volumeLimit:
+                if i[2] >= 30:
+                    buyList.append(i[1])
+                elif i[2] <= -30:
+                    sellList.append(i[1])
     else:
         # ** only for score point **
         for i in scoreList:
-            if i[4] > volumeLimit:
-                if i[2] > 0:
-                    buyList.append(i[0])
-                elif i[2] < 0:
-                    sellList.append(i[0])
+            if i[5] > volumeLimit:
+                if i[3] > 0:
+                    buyList.append(i[1])
+                elif i[3] < 0:
+                    sellList.append(i[1])
     fileBaseName = 'TotalScoreList'
     fileName = '../' + fileBaseName + '.csv'  # 'postData/' +
     try:
