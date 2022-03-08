@@ -31,8 +31,7 @@ touch ${projectBaseDir}/www/my_stock_site.sock
 pip install -q ${pipArgv} -v virtualenv==20.13.0
 cd $projectBaseDir
 echo "current runing dir: ${PWD}"
-${projectBaseDir}/.local/bin/virtualenv -q $projectDirName # For non-Raspberry_Pi
-# virtualenv -q $projectDirName # For Raspberry_Pi
+${projectBaseDir}/.local/bin/virtualenv -q $projectDirName
 cd $runningBaseDir/$(dirname "$0")
 echo "current runing dir: ${PWD}"
 cp -r ${PWD}/../../Stock-Project-main/ $projectBaseDir/$projectDirName/
