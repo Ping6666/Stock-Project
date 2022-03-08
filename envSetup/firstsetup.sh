@@ -17,6 +17,7 @@ rawDataDir='rawData'
 postDataDir='postData'
 
 # setup sys env
+sudo apt-get update
 sudo apt-get -qq install python3-pip=20.0.2-5ubuntu1.6 -y
 
 # setup uwsgi env
@@ -56,4 +57,5 @@ source ../bin/activate
 pip install ${pipArgv} -r ./$envSetupDir/required.txt
 
 # All done
+sudo apt-get clean && apt-get autoremove
 echo "If no warning, then congrats all done!"
