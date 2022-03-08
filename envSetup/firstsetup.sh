@@ -3,6 +3,7 @@
 # 1. for uwsgi under file myuwsgi.ini: userhome, socket
 # 2. for nginx under file default: ip addr, server unix dir
 # 3. for supervisor under file mysite.conf: directory, command
+# 4. if env is Raspberry_Pi deal all line with '# For Raspberry_Pi'
 
 # second decide where to store the project
 projectBaseDir='/home/ping' # plz give a(n) (absolute) path
