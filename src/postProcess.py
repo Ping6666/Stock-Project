@@ -75,23 +75,7 @@ def scoreRank(fileList):
             if newList != None:
                 scoreList.append(newList)
     scoreList = sorted(scoreList, key=lambda l: l[2], reverse=True)
-    if checker == 0:
-        df = pd.DataFrame({
-            'StockName': [i[0] for i in scoreList],
-            'StockNumber': [i[1] for i in scoreList],
-            'StockScore': [i[2] for i in scoreList],
-            'StockClose': [i[3] for i in scoreList],
-            'StockVolume': [i[4] for i in scoreList]
-        })
-    else:
-        df = pd.DataFrame({
-            'StockName': [i[0] for i in scoreList],
-            'StockNumber': [i[1] for i in scoreList],
-            'StockScore': [i[2] for i in scoreList],
-            'StockScorePoint': [i[3] for i in scoreList],
-            'StockClose': [i[4] for i in scoreList],
-            'StockVolume': [i[5] for i in scoreList]
-        })
+    # buy, sell check
     buyList, sellList, volumeLimit = [], [], 5000
     if checker == 0:
         # ** only for score **
@@ -109,6 +93,36 @@ def scoreRank(fileList):
                     buyList.append(i[1])
                 elif i[3] < 0:
                     sellList.append(i[1])
+    # Score Strategy List
+    scoreStrategyList = []
+    for i in scoreList:
+        if i[1] in buyList:
+            scoreStrategyList.append("Buy")
+        elif i[1] in sellList:
+            scoreStrategyList.append("Sell")
+        else:
+            scoreStrategyList.append(" ")
+    # df = pd.DataFrame
+    if checker == 0:
+        df = pd.DataFrame({
+            'StockName': [i[0] for i in scoreList],
+            'StockNumber': [i[1] for i in scoreList],
+            'StockScore': [i[2] for i in scoreList],
+            'StockClose': [i[3] for i in scoreList],
+            'StockVolume': [i[4] for i in scoreList],
+            'StockStrategy': scoreStrategyList
+        })
+    else:
+        df = pd.DataFrame({
+            'StockName': [i[0] for i in scoreList],
+            'StockNumber': [i[1] for i in scoreList],
+            'StockScore': [i[2] for i in scoreList],
+            'StockScorePoint': [i[3] for i in scoreList],
+            'StockClose': [i[4] for i in scoreList],
+            'StockVolume': [i[5] for i in scoreList],
+            'StockStrategy': scoreStrategyList
+        })
+    # df.to_csv
     fileBaseName = 'TotalScoreList'
     fileName = '../' + fileBaseName + '.csv'  # 'postData/' +
     try:
