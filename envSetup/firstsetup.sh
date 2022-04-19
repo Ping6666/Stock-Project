@@ -42,10 +42,6 @@ sudo pip install -q -v uwsgi==2.0.20 virtualenv==20.13.0
 
 mkdir $projectBaseDir/www/
 touch $projectBaseDir/www/my_stock_site.sock
-sudo cp ./default /etc/nginx/sites-enabled/
-sudo cp ./mysite.conf /etc/supervisor/conf.d/
-sudo supervisorctl reread
-sudo supervisorctl update
 
 virtualenv -q $projectDirName
 
@@ -54,6 +50,11 @@ echo "current runing dir: ${PWD}"
 
 cp -r ${PWD}/../../$projectDefualtName/ $projectBaseDir/$projectDirName/
 mv $projectBaseDir/$projectDirName/$projectDefualtName/ $projectBaseDir/$projectDirName/code/
+
+sudo cp ./default /etc/nginx/sites-enabled/
+sudo cp ./mysite.conf /etc/supervisor/conf.d/
+sudo supervisorctl reread
+sudo supervisorctl update
 
 cd $projectBaseDir/$projectDirName/code/
 echo "current runing dir: ${PWD}"
