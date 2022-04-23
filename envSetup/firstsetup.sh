@@ -11,7 +11,7 @@ pipArgv=' --no-cache-dir --extra-index-url https://www.piwheels.org/simple ' # F
 
 # sh pre-set
 runningBaseDir=${PWD}
-projectDefualtName='Stock-Project-main'
+projectDefualtName='Stock-Project' # use git clone to download this repository
 envSetupDir='envSetup'
 rawDataDir='rawData'
 postDataDir='postData'
@@ -73,6 +73,8 @@ sudo apt-get clean && apt-get autoremove
 cd $projectBaseDir
 echo "current runing dir: ${PWD}"
 
+bash ./stockproject/code/envSetup/stopsupervisor.sh
+bash ./stockproject/code/envSetup/stopsupervisor.sh
 bash ./stockproject/code/envSetup/stopsupervisor.sh
 bash ./stockproject/code/envSetup/stopsupervisor.sh
 sudo supervisorctl start mysite:*
