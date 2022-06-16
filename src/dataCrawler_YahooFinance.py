@@ -24,14 +24,15 @@ from preProcess import preProcessYahooFinance
 # period2 可以給 大於最新日期 例如 2000000000 (代表輸出 需涵蓋最新資料)
 
 
-def downloadFromYahoo_Single(stockNum, countryCode=''):
+def downloadFromYahoo_Single(stockNum, countryCode='', timeInterval='1d'):
     ua = UserAgent()
     userAgent = ua.random
     headers = {'User-Agent': userAgent}
     urlBase = (
         "https://query1.finance.yahoo.com/v7/finance/download/" +
         str(stockNum) + str(countryCode) +
-        "?period1=0&period2=2000000000&interval=1d&events=history&includeAdjustedClose=true"
+        "?period1=0&period2=2000000000&interval=" + str(timeInterval) +
+        "&events=history&includeAdjustedClose=true"
     )
     # load from the website
     response = requests.get(urlBase, headers=headers)
@@ -39,8 +40,9 @@ def downloadFromYahoo_Single(stockNum, countryCode=''):
     RCDecode = str(RC, 'utf-8', errors='ignore')
     rawData = StringIO(RCDecode)
     df = pd.read_csv(rawData)
-    preProcessYahooFinance(df, str(stockNum) + str(countryCode))
+    preProcessYahooFinance(df, str(stockNum) + str(countryCode) + "." + str(timeInterval))
     return
+
 
 
 def downloadFromYahoo(crawlerList, countryCode=''):
@@ -62,14 +64,18 @@ def downloadFromYahoo(crawlerList, countryCode=''):
         # loop to ensure download process
         for j in range(retryLimit):
             try:
-                downloadFromYahoo_Single(str(stockName), str(countryCodeNow))
+                downloadFromYahoo_Single(str(stockName), str(countryCodeNow), '1d')
+                downloadFromYahoo_Single(str(stockName), str(countryCodeNow), '1wk')
+                downloadFromYahoo_Single(str(stockName), str(countryCodeNow), '1mo')
             except KeyboardInterrupt:
                 exit()
             except:
                 # for TWSE OTC
                 if countryCodeNow == '.TW':
                     try:
-                        downloadFromYahoo_Single(str(stockName), '.TWO')
+                        downloadFromYahoo_Single(str(stockName), '.TWO', '1d')
+                        downloadFromYahoo_Single(str(stockName), '.TWO', '1wk')
+                        downloadFromYahoo_Single(str(stockName), '.TWO', '1mo')
                     except KeyboardInterrupt:
                         exit()
                     except:

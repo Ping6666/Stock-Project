@@ -388,7 +388,10 @@ def scorepage():
                                       dtype={'num_followers': np.int64})
     except:
         _pg_tables_data = ''
-    _pg_tables = [_pg_tables_data.to_html()]
+    _pg_tables_data_1d = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1d") == True]
+    _pg_tables_data_1wk = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1wk") == True]
+    _pg_tables_data_1mo = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1mo") == True]
+    _pg_tables = [_pg_tables_data_1d.to_html() + _pg_tables_data_1wk.to_html() + _pg_tables_data_1mo.to_html()]
     return flask.render_template('table.html',
                                  pg_title=_pg_title,
                                  pg_date=_pg_date,
