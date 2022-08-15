@@ -386,14 +386,19 @@ def scorepage():
     _pg_date = date.today()
     _pg_body = ''
     try:
-        _pg_tables_data = pd.read_csv('../TotalScoreList.csv', dtype={'num_followers': np.int64})
+        _pg_tables_data = pd.read_csv('../TotalScoreList.csv',
+                                      dtype={'num_followers': np.int64})
     except:
-        _pg_tables_data = ''
-        _pg_tables_data_1d = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1d") == True]
-        _pg_tables_data_1wk = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1wk") == True]
-        _pg_tables_data_1mo = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1mo") == True]
-        _pg_tables = [_pg_tables_data_1d.to_html() + _pg_tables_data_1wk.to_html() + _pg_tables_data_1mo.to_html()]
-    return flask.render_template('table.html', pg_title=_pg_title, pg_date=_pg_date, pg_body=_pg_body, pg_tables=_pg_tables)
+        _pg_tables_data = ''  # fail to read file
+    _pg_tables_data_1d = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1d") == True]
+    _pg_tables_data_1wk = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1wk") == True]
+    _pg_tables_data_1mo = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1mo") == True]
+    _pg_tables = [_pg_tables_data_1d.to_html() + _pg_tables_data_1wk.to_html() + _pg_tables_data_1mo.to_html()]
+    return flask.render_template('table.html',
+                                 pg_title=_pg_title,
+                                 pg_date=_pg_date,
+                                 pg_body=_pg_body,
+                                 pg_tables=_pg_tables)
 
 
 def os_Caller():
