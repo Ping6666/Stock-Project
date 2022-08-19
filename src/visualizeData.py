@@ -1,26 +1,16 @@
-# version: 0.5
+# version: 0.6
 
 # take out data from csv file and then visualize the data
 import os, sys
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime import date
 
 pd.options.display.float_format = '{:.3f}'.format
-
-import dash
-# from dash import dcc, html
-import dash_core_components as dcc
-import dash_html_components as html
-from dash.dependencies import Input, Output
 
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-
-import flask
-
-from datetime import date
 
 
 def graphFromFile(fileBase, fileName, timeLength_):
@@ -318,12 +308,24 @@ def visualizePATH(fileBase, fileType='.csv'):
     return fileListwithName
 
 
+
+# Server Back End
+import dash
+# from dash import dcc, html
+import dash_core_components as dcc
+import dash_html_components as html
+from dash.dependencies import Input, Output
+
+import flask
+
+
 # def visualizeStart(__name__, fileBase, fileName, length, dir=0):
 fileBase = '../postData/'
 timeLength = [45, 60, 90, 120, 240, 360, 480, 600]
 
 # start app setting
 app = flask.Flask(__name__)
+
 dashapp = dash.Dash(
     __name__,
     server=app,
@@ -387,7 +389,7 @@ def scorepage():
         _pg_tables_data = pd.read_csv('../TotalScoreList.csv',
                                       dtype={'num_followers': np.int64})
     except:
-        _pg_tables_data = ''
+        _pg_tables_data = ''  # fail to read file
     _pg_tables_data_1d = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1d") == True]
     _pg_tables_data_1wk = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1wk") == True]
     _pg_tables_data_1mo = _pg_tables_data[_pg_tables_data["StockNumber"].str.contains(".1mo") == True]
@@ -399,6 +401,24 @@ def scorepage():
                                  pg_tables=_pg_tables)
 
 
+def os_Caller():
+    # os.system("@echo off")
+    # os.seteuid(os.geteuid()) # does it work?
+    # os.system("bash ../envSetup/datacrawler.sh --no-output") # fail on no wait
+    import subprocess
+    subprocess.Popen(["bash", "../envSetup/datacrawler.sh"]) # no wait
+    return
+
+
+@app.route('/refresh')
+def refreshdata():
+    try:
+        return flask.render_template('refresh.html', pg_title='Refresh data')
+    finally:
+        os_Caller()
+    return
+
+
 @app.errorhandler(Exception)
 def errorredir(e):
     return flask.render_template('redir.html', pg_title='redir...')
@@ -407,3 +427,5 @@ def errorredir(e):
 if __name__ == '__main__':
     print("Start flask without uwsgi, nginx, supervisor.")
     app.run()
+
+
