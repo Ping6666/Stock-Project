@@ -46,7 +46,8 @@ def create_dash(flask_app):
             'value': str(name[0])
         } for name in newfileList]
         if len(nowfileList) == 0:
-            return newoptions_, newoptions_[0]['value']
+            return newoptions_, None
+            # return newoptions_, newoptions_[0]['value']
         return newoptions_, nowvalue
 
     # dcc.Slider
@@ -57,7 +58,7 @@ def create_dash(flask_app):
     def graphCallback(fileName, length):
         if fileName == None:
             fileName = ''
-        fig = create_graph(fileBase, fileName, length)
+        fig = create_graph(fileBase, str(fileName), length)
         return fig
 
     return dashapp
