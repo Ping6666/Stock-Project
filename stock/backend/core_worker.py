@@ -1,19 +1,27 @@
 # version: 0.7
 
-import os
-from subprocess import call
+import os, sys
 
-clean_folder = True
-stockFiles = ['TW_my.txt', 'US_my.txt']
+## outside the docker ##
+# sys.path.insert(1, '../core/')
+# from postProcess import postProcessPATH
+# from dataCrawler import crawlerReadFile
 
-if clean_folder:
-    os.system("rm -r ../post_files/")
-    os.mkdir("../post_files/")
-    print("rm files under dir ../post_files/")
+## inside the docker (cause by WORKDIR in dockerfile) ##
+from stock.core.postProcess import postProcessPATH
+from stock.core.dataCrawler import crawlerReadFile
 
-for nowfile in stockFiles:
-    file_name = "../stock_number/" + nowfile
-    try:
-        os.system("python3 ../core/main.py -i " + file_name)
-    except:
-        os.system("python ../core/main.py -i " + file_name)
+
+def workhouse(clean_folder, stockFiles):
+    # empty the folder
+    if clean_folder:
+        os.system("rm -r ../post_files/")
+        os.mkdir("../post_files/")
+        print("rm files under dir ../post_files/")
+    # download list
+    for nowfile in stockFiles:
+        file_name = "../stock_number/" + nowfile
+        # connect "core/main.py -i" api
+        fileBase2, fileBase3 = '../post_files/', '../stock_number/'
+        crawlerReadFile(fileBase3, file_name, '.TW')
+        postProcessPATH(fileBase2)

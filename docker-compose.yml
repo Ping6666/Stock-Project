@@ -6,7 +6,7 @@ services:
     build:
       context: ./stock
       dockerfile: dockerfile
-    container_name: subdomain_stock
+    container_name: stock # subdomain_stock
     restart: always
     environment:
       - APP_NAME=FlaskApp
