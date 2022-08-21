@@ -26,7 +26,7 @@ def create_dash(flask_app):
         dcc.Slider(id='time-length',
                    min=timeLength[0],
                    max=timeLength[-1],
-                   value=timeLength[2],
+                   value=timeLength[1],
                    marks={str(time_): str(time_)
                           for time_ in timeLength},
                    step=None),

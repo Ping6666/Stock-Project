@@ -30,14 +30,13 @@ def create_flask():
         try:
             return render_template('refresh.html')
         finally:
-            from subprocess import Popen, PIPE
+            from subprocess import Popen
             # call without waiting
-            popen = Popen(["python", "core_worker.py"],
-                          stdin=PIPE,
-                          stdout=PIPE,
-                          stderr=PIPE)
-            popen.wait(100)  # wait a little for docker to complete
-        # return
+            try:
+                Popen(["python3", "core_worker.py"])
+            except:
+                Popen(["python", "core_worker.py"])
+        return
 
     @app.errorhandler(Exception)
     def redir_page(e):
