@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title> Visualize Stock Score Table </title>
+</head>
+
+<body>
+
+    <a href="../stock"> return to home page</a>
+
+    {% for pg_table in pg_tables %}
+    {{ pg_table | safe }}
+    {% endfor %}
+
+</body>
+
+</html>
