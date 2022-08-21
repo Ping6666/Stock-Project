@@ -20,6 +20,7 @@ follow through **Install using the repository**: Set up the repository, Install 
 
 ### docker compose
 
+- `sudo docker compose build`
 - `sudo docker compose up -d`
 - `sudo docker compose stop`
 - `sudo docker compose down`
@@ -27,11 +28,16 @@ follow through **Install using the repository**: Set up the repository, Install 
     - `sudo docker compose down --rmi`
 - `sudo docker compose rm`
 
+### docker
+
+- `sudo docker stop`
+- `sudo docker rm -v`
+
 ### watcher
 
 - `sudo docker network ls`
-- `sudo docker compose ps --all`
-- `sudo docker ps -all`
+- `sudo docker compose ps -a`
+- `sudo docker ps -a`
 
 ## BUGs
 
