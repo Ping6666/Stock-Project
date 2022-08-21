@@ -28,7 +28,7 @@ def postProcessCSV(fileName):
     fileName_ = fileName.replace('.csv', '')
     stockNum = fileName_.split('/')
     showingName = ''
-    stockNameList = '../stock_number/TW_all.txt'
+    stockNameList = "./stock_number/TW_all.txt"
     try:
         f = open(stockNameList, 'r', encoding='utf-8')
     except:
@@ -50,7 +50,7 @@ def postProcessCSV(fileName):
     # stock number
     thisList.append(stockNum[-1])
     # stock score
-    scoreNow = df['Score'].iloc[len(df['Score']) - 1]
+    scoreNow = df['Score'].iloc[len(df['Score']) - 1]  # BUG here
     if np.isnan(scoreNow):
         scoreNow = 0
     thisList.append(scoreNow)
@@ -119,7 +119,7 @@ def scoreRank(fileList):
         })
     # df.to_csv
     fileBaseName = 'TotalScoreList'
-    fileName = '../post_files/' + fileBaseName + '.csv'  # 'post_files/' +
+    fileName = "./post_files/" + fileBaseName + '.csv'  # 'post_files/' +
     try:
         df.to_csv(fileName, index=False)
         print("\nStock number " + fileBaseName +

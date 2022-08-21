@@ -5,10 +5,6 @@ import pandas as pd
 import time, requests
 from fake_useragent import UserAgent
 
-## outside the docker ##
-# from preProcess import preProcessYahooFinance
-
-## inside the docker (cause by WORKDIR in dockerfile) ##
 from core.preProcess import preProcessYahooFinance
 
 # The sample of Yahoo Finance website url

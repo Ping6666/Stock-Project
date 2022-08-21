@@ -226,7 +226,7 @@ def preProcessFromStock(stockDataFrame, stockName):
         'Score_SMA_5': Score_SMA_5_,
         'Score': Score
     })
-    fileName = '../post_files/' + str(stockName) + '.csv'
+    fileName = "./post_files/" + str(stockName) + '.csv'
     dfNew_.to_csv(fileName, index=False)
     print("Stock number " + str(stockName) + "'s csv is completed.")
     return
