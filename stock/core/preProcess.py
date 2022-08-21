@@ -83,10 +83,21 @@ def preProcessFromStock(stockDataFrame, stockName):
     # Score - Self Index
     # > 0: buy; < 0: sell; number range 50 ~ -50
     Score = []
+    # Trend Analysis
+    # > 0: 漲勢; = 0: 平盤; < 0: 跌勢
+    # TrendAnalysis, TrendAnalysisRaw = [], []
+    # thresholdRatio = 1.5
+    # tmp1MidNumber, timeLength = 5, 10  # which means 5 % and 10 days
+    # Score Point
+    # ScorePoint = []
+    # midPoint1, midPoint2, midPoint3 = 20, 30, 50
     counter = 0
     for i in range(len(stockDataFrame['Date'])):
         if i == 0:
             Score.append(0)
+            # ScorePoint.append(0)
+            # TrendAnalysis.append(0)
+            # TrendAnalysisRaw.append(0)
             continue
         todayScore = 0
         if D[i] < 10:
@@ -118,6 +129,35 @@ def preProcessFromStock(stockDataFrame, stockName):
                           float(stockDataFrame["Close"][i]))
         except:
             counter = counter + 1
+        # TrendAnalysis
+        # TrendAnalysisRaw.append(tmp1)
+        # tmp1_ = tmp1
+        # if tmp1_ < tmp1MidNumber and tmp1_ > -tmp1MidNumber:
+        #     tmp1_ = 0
+        # elif np.isnan(tmp1_):
+        #     tmp1_ = 0
+        # else:
+        #     timeLength_ = int(timeLength * float((100 + 2 * abs(tmp1_)) / 100))
+        #     length = len(TrendAnalysis)
+        #     length_ = min(timeLength_, length)
+        #     minTrendAnalysis, maxTrendAnalysis = 100, -100
+        #     for j in range(length_):
+        #         tmp_ = TrendAnalysis[length - 1 - j]
+        #         if tmp_ < minTrendAnalysis:
+        #             minTrendAnalysis = tmp_
+        #         if tmp_ > maxTrendAnalysis:
+        #             maxTrendAnalysis = tmp_
+        #     if tmp1_ < 0 and tmp1_ > minTrendAnalysis:
+        #         tmp1_ = -1
+        #     elif tmp1_ > 0 and tmp1_ < maxTrendAnalysis:
+        #         tmp1_ = 1
+        #     elif tmp1_ > tmp1MidNumber * thresholdRatio and TrendAnalysis[
+        #             -1] == 0:
+        #         tmp1_ = 1
+        #     elif tmp1_ < -tmp1MidNumber * thresholdRatio and TrendAnalysis[
+        #             -1] == 0:
+        #         tmp1_ = -1
+        # TrendAnalysis.append(tmp1_)
         todayScore = todayScore - tmp1 - tmp2 * tmp3 + tmp4
         if ICH_plot_1[i] > ICH_plot_2[i]:
             if ICH_plot_2[i - 1] > ICH_plot_1[i - 1]:
@@ -126,6 +166,29 @@ def preProcessFromStock(stockDataFrame, stockName):
             if ICH_plot_2[i - 1] < ICH_plot_1[i - 1]:
                 todayScore = todayScore - 10
         Score.append(todayScore)
+        # newTmp_ = 0
+        # if len(Score) >= 3:
+        #     if Score[-1] > Score[-2]:
+        #         if Score[-1] > -midPoint2 and (Score[-2] < -midPoint3
+        #                                        and Score[-3] < -midPoint3):
+        #             newTmp_ = -30
+        #         elif Score[-1] > -midPoint2 and (Score[-2] < -midPoint2
+        #                                          and Score[-3] < -midPoint2):
+        #             newTmp_ = -20
+        #         elif Score[-1] > -midPoint1 and (Score[-2] + Score[-3] <
+        #                                          -2 * midPoint1):
+        #             newTmp_ = -10
+        #     elif Score[-1] < Score[-2]:
+        #         if Score[-1] < midPoint2 and (Score[-2] > midPoint3
+        #                                       and Score[-3] > midPoint3):
+        #             newTmp_ = 30
+        #         elif Score[-1] < midPoint2 and (Score[-2] > midPoint2
+        #                                         and Score[-3] > midPoint2):
+        #             newTmp_ = 20
+        #         elif Score[-1] < midPoint1 and (Score[-2] + Score[-3] >
+        #                                         2 * midPoint1):
+        #             newTmp_ = 10
+        # ScorePoint.append(newTmp_)
     Score_ = pd.Series(Score)
     Score_SMA_5 = ta.trend.SMAIndicator(close=Score_, window=5)
     Score_SMA_5_ = Score_SMA_5.sma_indicator()
@@ -157,6 +220,9 @@ def preProcessFromStock(stockDataFrame, stockName):
         'SMA_60': resultList[3],
         'SMA_120': resultList[4],
         'SMA_240': resultList[5],
+        # 'TrendAnalysisRaw': TrendAnalysisRaw,
+        # 'TrendAnalysis': TrendAnalysis,
+        # 'ScorePoint': ScorePoint,
         'Score_SMA_5': Score_SMA_5_,
         'Score': Score
     })
