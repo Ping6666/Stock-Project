@@ -32,3 +32,8 @@ follow through **Install using the repository**: Set up the repository, Install 
 - `sudo docker network ls`
 - `sudo docker compose ps --all`
 - `sudo docker ps -all`
+
+## BUGs
+
+- fail refreshing crawler files
+    - cannot call python core_worker.py with subprocess.Popen()
