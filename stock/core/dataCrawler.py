@@ -1,4 +1,4 @@
-# version: 0.7
+# version: 1.0
 
 from io import StringIO
 import pandas as pd

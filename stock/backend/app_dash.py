@@ -1,7 +1,8 @@
-# version: 0.7
+# version: 1.0
 
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
+
 from app_plotly import *
 
 

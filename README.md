@@ -1,6 +1,6 @@
 # stock project
 
-version: v0.7.7.4
+version: v1.0
 
 ## Usage
 
@@ -25,9 +25,10 @@ If you are trying to use this code against the copyright law where you are or th
 
 - virtualenv (option)
 - copy stock-project folder into new (venv) folder
-- go to folder $your_path/stock/
-- export PYTHONPATH="$PYTHONPATH:./core"
-- python ./backend/main.py
+- change directory to folder $your_path/stock/
+- activate current venv (option) & pip install -r requirements.txt
+- run [export PYTHONPATH="$PYTHONPATH:./core"]
+- run [python ./backend/main.py]
 - just have fun on `0.0.0.0:5000`
 
 ## Code Walkthrough
