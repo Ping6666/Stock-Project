@@ -327,6 +327,7 @@ def visualizePATH(fileBase, fileType='.csv'):
         f = open(stockNameList, 'r', encoding='utf-8')
     except:
         print("No such file or directory : " + stockNameList + ".")
+        return []  # None
     tmpList = f.readlines()
     tmpList_ = []
     for tmp in tmpList:

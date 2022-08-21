@@ -1,5 +1,7 @@
 # stock project
 
+version: v0.7.6.6.7
+
 ## install docker and docker-compose
 
 [Install Docker Engine on Ubuntu | Docker Documentation](https://docs.docker.com/engine/install/ubuntu/#installation-methods)
@@ -44,7 +46,13 @@ follow through **Install using the repository**: Set up the repository, Install 
 - `sudo docker volume ls`
 - `sudo docker network ls`
 
-## BUGs
+## ENV
 
-- fail refreshing crawler files
-    - cannot call python core_worker.py with subprocess.Popen()
+### inside docker
+
+need to change all path about file_base to "./"
+add "core." to path
+
+### outside docker
+
+need to change all path about file_base to "../"

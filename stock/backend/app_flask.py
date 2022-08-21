@@ -16,7 +16,9 @@ def create_flask():
             fileName = '../post_files/TotalScoreList.csv'
             csv_data = pd.read_csv(fileName, dtype={'num_followers': np.int64})
         except:
-            csv_data = ''  # fail to read file
+            # fail to read file
+            csv_data = ''
+            return render_template('redir.html')
         # data process
         csv_d = csv_data[csv_data["StockNumber"].str.contains(".1d") == True]
         csv_wk = csv_data[csv_data["StockNumber"].str.contains(".1wk") == True]
@@ -32,7 +34,6 @@ def create_flask():
         finally:
             from core_worker import workhouse
             workhouse(True, ['TW_my.txt', 'US_my.txt'])
-        return
 
     # @app.errorhandler(Exception)
     # def error_page(e):
