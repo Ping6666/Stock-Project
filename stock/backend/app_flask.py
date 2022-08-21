@@ -30,9 +30,13 @@ def create_flask():
         try:
             return render_template('refresh.html')
         finally:
-            import subprocess
-            # use subprocess.Popen to call without waiting
-            subprocess.Popen(["python", "core_worker.py"])
+            from subprocess import Popen, PIPE
+            # call without waiting
+            popen = Popen(["python", "core_worker.py"],
+                          stdin=PIPE,
+                          stdout=PIPE,
+                          stderr=PIPE)
+            popen.wait(100)  # wait a little for docker to complete
         # return
 
     @app.errorhandler(Exception)
