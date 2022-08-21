@@ -2,11 +2,10 @@ version: "3"
 
 services:
   stock:
-    # image:
     build:
       context: ./stock
       dockerfile: dockerfile
-    container_name: stock # subdomain_stock
+    container_name: stock
     restart: always
     environment:
       - APP_NAME=FlaskApp

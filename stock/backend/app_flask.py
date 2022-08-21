@@ -13,7 +13,7 @@ def create_flask():
     def score_page():
         # file read
         try:
-            fileName = '../post_files/TotalScoreList.csv'
+            fileName = "./post_files/TotalScoreList.csv"
             csv_data = pd.read_csv(fileName, dtype={'num_followers': np.int64})
         except:
             # fail to read file
@@ -29,19 +29,26 @@ def create_flask():
 
     @app.route('/refresh')
     def refresh_page():
+        ## connect api in core_worker ##
+        # from core_worker import workhouse
+        # workhouse(True, ['TW_my.txt', 'US_my.txt'])
+        # return
+
+        ## subprocess.Popen() ##
         try:
             return render_template('refresh.html')
         finally:
-            from core_worker import workhouse
-            workhouse(True, ['TW_my.txt', 'US_my.txt'])
+            from subprocess import Popen
+            Popen(["python3",
+                   "./backend/core_worker.py"])  # call without waiting
 
     # @app.errorhandler(Exception)
     # def error_page(e):
     #     _pg_error = str(e)
     #     return render_template('error.html', pg_error=_pg_error)
 
-    # @app.errorhandler(Exception)
-    # def redir_page(e):
-    #     return render_template('redir.html')
+    @app.errorhandler(Exception)
+    def redir_page(e):
+        return render_template('redir.html')
 
     return app

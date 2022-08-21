@@ -6,7 +6,7 @@ from app_plotly import *
 
 
 def create_dash(flask_app):
-    fileBase = '../post_files/'
+    fileBase = "./post_files/"
     timeLength = [45, 60, 90, 120, 240, 360, 480, 600, 1200]
 
     dashapp = Dash(
@@ -46,8 +46,11 @@ def create_dash(flask_app):
             'value': str(name[0])
         } for name in newfileList]
         if len(nowfileList) == 0:
-            return newoptions_, None
-            # return newoptions_, newoptions_[0]['value']
+            try:
+                newvalue = newoptions_[0]['value']
+            except:
+                newvalue = None
+            return newoptions_, newvalue
         return newoptions_, nowvalue
 
     # dcc.Slider

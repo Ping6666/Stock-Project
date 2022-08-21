@@ -26,7 +26,7 @@ def file_read(fileBase, fileName):
 
 def file_cht_name(showingName):
     # take out the chinese name of cc = TW stock
-    stockNameList = '../stock_number/TW_all.txt'
+    stockNameList = "./stock_number/TW_all.txt"
     if showingName.find('.TW') != 0:
         try:
             f = open(stockNameList, 'r', encoding='utf-8')
@@ -322,7 +322,7 @@ def visualizePATH(fileBase, fileType='.csv'):
                 fileList.append(f_)
     fileList.sort()
     # print(fileList)
-    stockNameList = '../stock_number/TW_all.txt'
+    stockNameList = "./stock_number/TW_all.txt"
     try:
         f = open(stockNameList, 'r', encoding='utf-8')
     except:

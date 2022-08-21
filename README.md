@@ -1,58 +1,72 @@
 # stock project
 
-version: v0.7.6.6.7
+version: v0.7.7.4
 
-## install docker and docker-compose
+## Usage
 
-[Install Docker Engine on Ubuntu | Docker Documentation](https://docs.docker.com/engine/install/ubuntu/#installation-methods)
+Web Crawl the stock historical price from Goodinfo (deprecate since v0.7), TWSE (deprecate since v0.7), YahooFinance. \
+Then pre-process the raw data to structured data CSV, post-process the result with technical analysis. \
+Use Plotly to show the data from CSV file.
 
-follow through **Install using the repository**: Set up the repository, Install Docker Engine.
+### Warning on Web Crawl
 
-[Post-installation steps for Linux | Docker Documentation](https://docs.docker.com/engine/install/linux-postinstall/)
+Please know that the data from the website which being web crawled may include some contents that are being copyright law protected. \
+If you are trying to use this code against the copyright law where you are or the web server is, you will have to take full responsabilities.
 
-### Docker document
+## Start-up
 
-[Docker run reference](https://docs.docker.com/engine/reference/run/)
+### With Docker (& Docker compose)
 
-## start up (install docker first)
+- (sudo) docker network create web_service
+- (sudo) docker compose up [-d]
+- just have fun on `0.0.0.0:5000`
 
-### docker network
+### Without Docker
 
-- `sudo docker network create $net_name`
+- virtualenv (option)
+- copy stock-project folder into new (venv) folder
+- go to folder $your_path/stock/
+- export PYTHONPATH="$PYTHONPATH:./core"
+- python ./backend/main.py
+- just have fun on `0.0.0.0:5000`
 
-### docker compose
+## Code Walkthrough
 
-- `sudo docker compose up [-d]`
+### core/dataCrawler: YahooFinance
 
-### docker
+> IP limit: 695
 
-- `sudo docker stop $container_name`
-- `sudo docker rm -v $container_name`
+#### web api
 
-### prune
+- [Yahoo Finance - Stock Market Live, Quotes, Business & Finance News](https://finance.yahoo.com/)
+- [TAIWAN SEMICONDUCTOR MANUFACTUR (2330.TW) Stock Historical Prices & Data - Yahoo Finance](https://finance.yahoo.com/quote/2330.TW/history?p=2330.TW)
 
-- `docker system prune [-a]`
-- `docker container prune [--filter "until=12h"]`
-- `sudo docker image prune [-a]`
+### core/preProcess
 
-### watcher
+> Python Package - TA: [Welcome to Technical Analysis Library in Python’s documentation!](https://technical-analysis-library-in-python.readthedocs.io/en/latest/)
 
-- `sudo docker compose ps -a`
-- `sudo docker ps -a`
+#### index (technical  analysis, chip analysis)
 
-* `sudo docker logs $container_name`
+- Date, Open, High, Low, Close, Volume
 
-- `sudo docker image ls`
-- `sudo docker volume ls`
-- `sudo docker network ls`
+* Foreign, Trust, Dealer, ForeignRatio
 
-## ENV
+- RSI
+- KD
+- KC
+- SMA
+- Ichimoku Cloud
 
-### inside docker
+### core/postProcess
 
-need to change all path about file_base to "./"
-add "core." to path
+Calculate score and save rank result to a single CSV file
 
-### outside docker
+### backend/main
 
-need to change all path about file_base to "../"
+- ployly (with dash and flask)
+
+> Tool: [Plotly Python Graphing Library | Python | Plotly](https://plotly.com/python/)
+
+## License
+
+plz follow MIT License
