@@ -30,16 +30,17 @@ def create_flask():
         try:
             return render_template('refresh.html')
         finally:
-            from subprocess import Popen
-            # call without waiting
-            try:
-                Popen(["python3", "core_worker.py"])
-            except:
-                Popen(["python", "core_worker.py"])
+            from core_worker import workhouse
+            workhouse(True, ['TW_my.txt', 'US_my.txt'])
         return
 
-    @app.errorhandler(Exception)
-    def redir_page(e):
-        return render_template('redir.html')
+    # @app.errorhandler(Exception)
+    # def error_page(e):
+    #     _pg_error = str(e)
+    #     return render_template('error.html', pg_error=_pg_error)
+
+    # @app.errorhandler(Exception)
+    # def redir_page(e):
+    #     return render_template('redir.html')
 
     return app

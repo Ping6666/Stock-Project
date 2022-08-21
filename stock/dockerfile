@@ -7,8 +7,9 @@ WORKDIR /stock
 ADD . /stock
 
 # ENV FLASK_APP=backend/main
-ENV FLASK_ENV=development
+ENV FLASK_DEBUG=True
 
 RUN pip install -r requirements.txt
-CMD ["python", "./backend/main.py"]
+CMD ["python"]
+# CMD ["python", "./backend/main.py"]
 # CMD ["flask", "run"]

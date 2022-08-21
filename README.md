@@ -16,28 +16,33 @@ follow through **Install using the repository**: Set up the repository, Install 
 
 ### docker network
 
-- `sudo docker network create web_service`
+- `sudo docker network create $net_name`
 
 ### docker compose
 
-- `sudo docker compose build`
-- `sudo docker compose up -d`
-- `sudo docker compose stop`
-- `sudo docker compose down`
-    - `sudo docker compose down --volumes`
-    - `sudo docker compose down --rmi`
-- `sudo docker compose rm`
+- `sudo docker compose up [-d]`
 
 ### docker
 
-- `sudo docker stop`
-- `sudo docker rm -v`
+- `sudo docker stop $container_name`
+- `sudo docker rm -v $container_name`
+
+### prune
+
+- `docker system prune [-a]`
+- `docker container prune [--filter "until=12h"]`
+- `sudo docker image prune [-a]`
 
 ### watcher
 
-- `sudo docker network ls`
 - `sudo docker compose ps -a`
 - `sudo docker ps -a`
+
+* `sudo docker logs $container_name`
+
+- `sudo docker image ls`
+- `sudo docker volume ls`
+- `sudo docker network ls`
 
 ## BUGs
 
