@@ -1,7 +1,7 @@
-# version: 0.5
+# version: 1.0
 
 # this for pre-process from raw data and store into csv file format
-import os, sys
+import os
 import pandas as pd
 import numpy as np
 import ta
@@ -226,7 +226,7 @@ def preProcessFromStock(stockDataFrame, stockName):
         'Score_SMA_5': Score_SMA_5_,
         'Score': Score
     })
-    fileName = '../postData/' + str(stockName) + '.csv'
+    fileName = "./post_files/" + str(stockName) + '.csv'
     dfNew_.to_csv(fileName, index=False)
     print("Stock number " + str(stockName) + "'s csv is completed.")
     return

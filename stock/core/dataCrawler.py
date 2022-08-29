@@ -1,10 +1,11 @@
-# version: 0.5
+# version: 1.0
 
-import os, time, requests
-from fake_useragent import UserAgent
-import pandas as pd
 from io import StringIO
-from preProcess import preProcessYahooFinance
+import pandas as pd
+import time, requests
+from fake_useragent import UserAgent
+
+from core.preProcess import preProcessYahooFinance
 
 # The sample of Yahoo Finance website url
 # "https://query1.finance.yahoo.com/v7/finance/download/2330.TW?period1=946944000&period2=1627603200&interval=1d&events=history&includeAdjustedClose=true"
@@ -28,21 +29,20 @@ def downloadFromYahoo_Single(stockNum, countryCode='', timeInterval='1d'):
     ua = UserAgent()
     userAgent = ua.random
     headers = {'User-Agent': userAgent}
-    urlBase = (
-        "https://query1.finance.yahoo.com/v7/finance/download/" +
-        str(stockNum) + str(countryCode) +
-        "?period1=0&period2=2000000000&interval=" + str(timeInterval) +
-        "&events=history&includeAdjustedClose=true"
-    )
+    urlBase = ("https://query1.finance.yahoo.com/v7/finance/download/" +
+               str(stockNum) + str(countryCode) +
+               "?period1=0&period2=2000000000&interval=" + str(timeInterval) +
+               "&events=history&includeAdjustedClose=true")
     # load from the website
     response = requests.get(urlBase, headers=headers)
     RC = response.content
     RCDecode = str(RC, 'utf-8', errors='ignore')
     rawData = StringIO(RCDecode)
     df = pd.read_csv(rawData)
-    preProcessYahooFinance(df, str(stockNum) + str(countryCode) + "." + str(timeInterval))
+    preProcessYahooFinance(
+        df,
+        str(stockNum) + str(countryCode) + "." + str(timeInterval))
     return
-
 
 
 def downloadFromYahoo(crawlerList, countryCode=''):
@@ -64,9 +64,12 @@ def downloadFromYahoo(crawlerList, countryCode=''):
         # loop to ensure download process
         for j in range(retryLimit):
             try:
-                downloadFromYahoo_Single(str(stockName), str(countryCodeNow), '1d')
-                downloadFromYahoo_Single(str(stockName), str(countryCodeNow), '1wk')
-                downloadFromYahoo_Single(str(stockName), str(countryCodeNow), '1mo')
+                downloadFromYahoo_Single(str(stockName), str(countryCodeNow),
+                                         '1d')
+                downloadFromYahoo_Single(str(stockName), str(countryCodeNow),
+                                         '1wk')
+                downloadFromYahoo_Single(str(stockName), str(countryCodeNow),
+                                         '1mo')
             except KeyboardInterrupt:
                 exit()
             except:

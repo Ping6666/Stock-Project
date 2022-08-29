@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  stock:
+    build:
+      context: ./stock
+      dockerfile: dockerfile
+    container_name: stock
+    restart: always
+    environment:
+      - APP_NAME=FlaskApp
+    ports:
+      - 5000:5000
+    networks:
+      - web_service
+
+networks:
+  web_service:
+    external: true

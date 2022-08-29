@@ -1,7 +1,7 @@
-# version: 0.5
+# version: 1.0
 
 # this for pre-process from raw data and store into csv file format
-import os, sys
+import os
 import pandas as pd
 import numpy as np
 
@@ -28,7 +28,7 @@ def postProcessCSV(fileName):
     fileName_ = fileName.replace('.csv', '')
     stockNum = fileName_.split('/')
     showingName = ''
-    stockNameList = '../stockNumber/TW_all.txt'
+    stockNameList = "./stock_number/TW_all.txt"
     try:
         f = open(stockNameList, 'r', encoding='utf-8')
     except:
@@ -41,24 +41,19 @@ def postProcessCSV(fileName):
         tmp_ = tmp_.split(' ')[0]
         tmpList_.append(tmp_)
     f.close()
-    stockNumber = stockNum[-1].split('.')[0]
+    target_stock_no = stockNum[-1].split('.')[0]
     for i in range(len(tmpList_)):
-        if stockNumber == (tmpList_[i].split('\t')[0]):
+        if target_stock_no == (tmpList_[i].split('\t')[0]):
             showingName = tmpList_[i].split('\t')[-1]
             break
     thisList.append(showingName)
     # stock number
     thisList.append(stockNum[-1])
     # stock score
-    scoreNow = df['Score'].iloc[len(df['Score']) - 1]
+    scoreNow = df['Score'].iloc[len(df['Score']) - 1]  # BUG here
     if np.isnan(scoreNow):
         scoreNow = 0
     thisList.append(scoreNow)
-    # stock scorePoint
-    # scorePointNow = df['ScorePoint'].iloc[len(df['ScorePoint']) - 1]
-    # if np.isnan(scorePointNow):
-    #     scorePointNow = 0
-    # thisList.append(scorePointNow)
     # others
     thisList.append(df['Close'].iloc[len(df['Close']) - 1])
     thisList.append(df['Volume'].iloc[len(df['Volume']) - 1])
@@ -124,7 +119,7 @@ def scoreRank(fileList):
         })
     # df.to_csv
     fileBaseName = 'TotalScoreList'
-    fileName = '../' + fileBaseName + '.csv'  # 'postData/' +
+    fileName = "./post_files/" + fileBaseName + '.csv'  # 'post_files/' +
     try:
         df.to_csv(fileName, index=False)
         print("\nStock number " + fileBaseName +

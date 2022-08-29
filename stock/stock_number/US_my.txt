@@ -19,7 +19,8 @@ AAPL.
 MSFT.
 GOOG.
 GOOGL.
-FB.
+#FB.
+META.
 TSM.
 AMD.
 NVDA.
