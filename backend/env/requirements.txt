@@ -1,0 +1,18 @@
+# requirements
+tqdm
+numpy
+pandas
+
+lxml
+openpyxl
+
+scipy
+scikit-learn
+
+ta
+
+Flask
+dash
+requests
+
+yapf

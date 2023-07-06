@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+
+  # ----- nginx ----- #
+  nginx:
+    container_name: stock-nginx
+    build: ./nginx
+    restart: always
+    volumes:
+      - ./nginx/log/nginx:/var/log/nginx
+    ports:
+      - 80:80
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - UPSTREAM_FRONTEND_IP=${UPSTREAM_FRONTEND_IP}
+      - UPSTREAM_BACKEND_IP=${UPSTREAM_BACKEND_IP}

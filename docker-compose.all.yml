@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+
+  # ----- nginx ----- #
+  nginx:
+    container_name: stock-nginx
+    build: ./nginx
+    restart: always
+    volumes:
+      - ./nginx/log/nginx:/var/log/nginx
+    ports:
+      - 80:80
+    environment:
+      - UPSTREAM_FRONTEND_IP=${UPSTREAM_FRONTEND_IP}
+      - UPSTREAM_BACKEND_IP=${UPSTREAM_BACKEND_IP}
+    networks:
+      - frontend
+      - backend
+
+  # ----- frontend ----- #
+  frontend:
+    container_name: stock-frontend
+    build: ./frontend
+    restart: always
+    expose:
+      - "3000"
+    networks:
+      - frontend
+
+  # ----- backend ----- #
+  backend:
+    container_name: stock-backend
+    build: ./backend
+    restart: always
+    volumes:
+      - ./backend:/workspace
+    ports:
+      - "5000:5000"
+    networks:
+      - backend
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
