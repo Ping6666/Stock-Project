@@ -13,6 +13,8 @@ ta
 
 Flask
 dash
+
 requests
+fake_useragent
 
 yapf

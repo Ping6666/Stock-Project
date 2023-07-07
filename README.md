@@ -1,4 +1,4 @@
-# stock project
+# Stock Project
 
 ## Disclaimer
 
