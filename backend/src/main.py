@@ -79,6 +79,22 @@ def fn_date(date_str):
     return res, code
 
 
+@app.route('/api/date/<date_str>/<csv_str>', methods=['GET'])
+def fn_data_csv(date_str, csv_str):
+
+    status, _file = sm.get_csv(date_str, csv_str)
+
+    res = {
+        'status': status,
+        'files': _file,
+    }
+
+    code = 200
+    if not status:
+        code = 404
+    return res, code
+
+
 ## --- symbol --- ##
 
 
@@ -116,34 +132,6 @@ def fn_symbol(symbol_str):
         return str(code), code
 
     return res
-
-
-## --- data --- ##
-
-
-@app.route('/api/data/<csv_str>', methods=['GET'])
-def fn_data_csv(csv_str):
-
-    _day = request.args.get("prev_day")
-
-    try:
-        _day = abs(int(_day))
-    except:
-        _day = 0
-
-    print('prev_day', _day)
-
-    status, _file = sm.get_csv(csv_str, _day)
-
-    res = {
-        'status': status,
-        'files': _file,
-    }
-
-    code = 200
-    if not status:
-        code = 404
-    return res, code
 
 
 ## --- file --- ##

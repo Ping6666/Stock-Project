@@ -366,10 +366,6 @@ class FileProtector():
 
     def __init__(self):
         self.lock_table = {}
-
-        # TODO
-        # remove from dict that the file does not exist on the
-
         return
 
     def get_lock(self, _name: str):
@@ -613,18 +609,13 @@ class StorageManager():
 
         return status, _file
 
-    def get_csv(self, _path: str, _day: int = 0):
+    def get_csv(self, date_path: str, csv_path: str):
         status = True
         _file = None
 
         try:
-
-            _days = self.tm.get_past_days()
-            parsed_days = self.tm.get_parsed_days(_days, 'date')
-            curr_day = parsed_days[_day]
-
-            _folder = f'./data/{curr_day}'
-            curr_path = f'./data/{curr_day}/{_path}.csv'
+            _folder = f'./data/{date_path}'
+            curr_path = f'./data/{date_path}/{csv_path}.csv'
 
             _is, _ = self.fm.get_path_is(curr_path, _folder=_folder)
 
