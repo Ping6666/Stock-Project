@@ -615,13 +615,14 @@ class StorageManager():
 
         try:
             _folder = f'./data/{date_path}'
-            curr_path = f'./data/{date_path}/{csv_path}.csv'
+            curr_path = f'./data/{date_path}/{csv_path}'
 
             _is, _ = self.fm.get_path_is(curr_path, _folder=_folder)
 
             if _is:
                 df = pd.read_csv(curr_path)
-                _file = df.to_json()
+                _file = df.to_dict('records')
+                # _file = df.to_json()
 
         except:
             status = False

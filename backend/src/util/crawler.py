@@ -65,12 +65,17 @@ def symbol_parser(symbols: List[str]):
 def _preprocess_ta(df):
     # --- RSI, KD --- #
 
-    _rsi = momentum.RSIIndicator(close=df['Close'])
+    __rsi = momentum.RSIIndicator(close=df['Close'])
     _kd = momentum.StochasticOscillator(high=df['High'],
                                         low=df['Low'],
                                         close=df['Close'])
-    _k = _rsi.rsi() * _kd.stoch() / 100
-    _d = _rsi.rsi() * _kd.stoch_signal() / 100
+    _k = _kd.stoch()
+    _d = _kd.stoch_signal()
+
+    _rsi = __rsi.rsi()
+
+    _k_rsi = _rsi * _k / 100
+    _d_rsi = _rsi * _d / 100
 
     # --- KC --- #
 
@@ -99,9 +104,35 @@ def _preprocess_ta(df):
 
     ## -- plot convert -- ##
 
+    def shift_list(seq, n):
+        return seq[n:]
+
     _ich_plot_1 = ((df['Close'] - _ich_conversion_line) +
                    (df['Close'] - _ich_base_line))
     _ich_plot_2 = (_ich_a - _ich_b)
+
+    displacement = 26
+    ich_tmp_1 = shift_list(_ich_a, displacement - 1)
+    ich_tmp_2 = shift_list(_ich_b, displacement - 1)
+    ich_tmp_1 = df["Close"] - ich_tmp_1
+    ich_tmp_2 = df["Close"] - ich_tmp_2
+
+    _ich_plot_3 = []
+    for idx in range(len(ich_tmp_1)):
+        new_a = ich_tmp_1[idx]
+        new_b = ich_tmp_2[idx]
+
+        # magnitude
+        _new = min(abs(new_a), abs(new_b))
+
+        # sign
+        tmp_sign = 0
+        if new_a > 0 and new_b > 0:
+            tmp_sign = 1
+        elif new_a < 0 and new_b < 0:
+            tmp_sign = -1
+
+        _ich_plot_3.append(_new * tmp_sign)
 
     # --- pd.DataFrame --- #
 
@@ -114,11 +145,15 @@ def _preprocess_ta(df):
         'Volume': df['Volume'],
         'K': _k,
         'D': _d,
+        'RSI': _rsi,
+        'K_RSI': _k_rsi,
+        'D_RSI': _d_rsi,
         'KC_high': _kc_high,
         'KC_middle': _kc_middle,
         'KC_low': _kc_low,
         'ICH_plot_1': _ich_plot_1,
         'ICH_plot_2': _ich_plot_2,
+        'ICH_plot_3': _ich_plot_3,
         'SMA_5': _smas[0],
         'SMA_10': _smas[1],
         'SMA_20': _smas[2],
@@ -231,11 +266,15 @@ def _postprocess(_filename: str):
             'Volume': df['Volume'].iloc[-1],
             'K': df['K'].iloc[-1],
             'D': df['D'].iloc[-1],
+            'RSI': df['RSI'].iloc[-1],
+            'K_RSI': df['K_RSI'].iloc[-1],
+            'D_RSI': df['D_RSI'].iloc[-1],
             'KC_high': df['KC_high'].iloc[-1],
             'KC_middle': df['KC_middle'].iloc[-1],
             'KC_low': df['KC_low'].iloc[-1],
             'ICH_plot_1': df['ICH_plot_1'].iloc[-1],
             'ICH_plot_2': df['ICH_plot_2'].iloc[-1],
+            'ICH_plot_3': df['ICH_plot_3'].iloc[-1],
             'SMA_5': df['SMA_5'].iloc[-1],
             'SMA_10': df['SMA_10'].iloc[-1],
             'SMA_20': df['SMA_20'].iloc[-1],
@@ -262,11 +301,15 @@ def postprocess(_files: List[str], save_path: str):
         'Volume',
         'K',
         'D',
+        'RSI',
+        'K_RSI',
+        'D_RSI',
         'KC_high',
         'KC_middle',
         'KC_low',
         'ICH_plot_1',
         'ICH_plot_2',
+        'ICH_plot_3',
         'SMA_5',
         'SMA_10',
         'SMA_20',
