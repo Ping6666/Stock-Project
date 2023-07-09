@@ -28,6 +28,20 @@ from ta import momentum, trend, volatility
 # period2 可以給 大於最新日期 例如 2000000000 (代表輸出 需涵蓋最新資料)
 
 
+def _float(inputNum):
+    if inputNum != 'null' and not np.isnan(inputNum):
+        return True
+    return False
+
+
+def _float_list(l):
+    return [float(i) if _float(i) else 0 for i in l]
+
+
+def _str_list(l):
+    return [str(i).replace('-', '/') for i in l]
+
+
 def file_reader(_filename: str):
     symbols = []
 
@@ -143,23 +157,23 @@ def _preprocess_ta(df):
         'Low': df['Low'],
         'Close': df['Close'],
         'Volume': df['Volume'],
-        'K': _k,
-        'D': _d,
-        'RSI': _rsi,
-        'K_RSI': _k_rsi,
-        'D_RSI': _d_rsi,
-        'KC_high': _kc_high,
-        'KC_middle': _kc_middle,
-        'KC_low': _kc_low,
-        'ICH_plot_1': _ich_plot_1,
-        'ICH_plot_2': _ich_plot_2,
-        'ICH_plot_3': _ich_plot_3,
-        'SMA_5': _smas[0],
-        'SMA_10': _smas[1],
-        'SMA_20': _smas[2],
-        'SMA_60': _smas[3],
-        'SMA_120': _smas[4],
-        'SMA_240': _smas[5],
+        'K': _float_list(_k),
+        'D': _float_list(_d),
+        'RSI': _float_list(_rsi),
+        'K_RSI': _float_list(_k_rsi),
+        'D_RSI': _float_list(_d_rsi),
+        'KC_high': _float_list(_kc_high),
+        'KC_middle': _float_list(_kc_middle),
+        'KC_low': _float_list(_kc_low),
+        'ICH_plot_1': _float_list(_ich_plot_1),
+        'ICH_plot_2': _float_list(_ich_plot_2),
+        'ICH_plot_3': _float_list(_ich_plot_3),
+        'SMA_5': _float_list(_smas[0]),
+        'SMA_10': _float_list(_smas[1]),
+        'SMA_20': _float_list(_smas[2]),
+        'SMA_60': _float_list(_smas[3]),
+        'SMA_120': _float_list(_smas[4]),
+        'SMA_240': _float_list(_smas[5]),
     })
 
     return _df
@@ -167,18 +181,13 @@ def _preprocess_ta(df):
 
 def _preprocess(df):
 
-    def _float(inputNum):
-        if inputNum != 'null' and not np.isnan(inputNum):
-            return True
-        return False
-
     _df = pd.DataFrame({
-        'Date': [str(i).replace('-', '/') for i in df['Date']],
-        'Open': [float(i) if _float(i) else 0 for i in df['Open']],
-        'High': [float(i) if _float(i) else 0 for i in df['High']],
-        'Low': [float(i) if _float(i) else 0 for i in df['Low']],
-        'Close': [float(i) if _float(i) else 0 for i in df['Close']],
-        'Volume': [float(i / 1000) if _float(i) else 0 for i in df['Volume']],
+        'Date': _str_list(df['Date']),
+        'Open': _float_list(df['Open']),
+        'High': _float_list(df['High']),
+        'Low': _float_list(df['Low']),
+        'Close': _float_list(df['Close']),
+        'Volume': _float_list(df['Volume']),
     })
 
     # --- magic check --- #

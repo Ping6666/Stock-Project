@@ -632,10 +632,14 @@ class StorageManager():
     ## --- get folders --- ##
 
     def get_dates(self):
+        self.fm.make_dir('./data')
+
         self._purge_dirs('./data')
         return self.fm.get_files('./data', is_file=False, is_dir=True)
 
     def get_symbols(self):
+        self.fm.make_dir('./symbols')
+
         return self.fm.get_files('./symbols')
 
     ## --- get items --- ##
