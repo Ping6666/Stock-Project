@@ -67,7 +67,7 @@ const Download = () => {
   const [checked, setChecked] = useState(false);
   const [ctx, setCtx] = useState([]);
 
-  const [messageApi, contextHolder] = message.useMessage();
+  const [message_api, contextHolder] = message.useMessage();
 
   const get_overwrite = function () {
     if (checked) {
@@ -87,17 +87,26 @@ const Download = () => {
     setCtx(res);
   };
 
-  const _download = function () {
-    messageApi.open({
-      type: 'success',
+  const _downloading = function () {
+    message_api.open({
+      type: 'info',
       content: 'Downloading',
       duration: 3,
     });
   };
 
-  const _onClick = function () {
-    _get_symbol(1);
-    _download();
+  const _done = function () {
+    message_api.open({
+      type: 'success',
+      content: 'Download Successful',
+      duration: 3,
+    });
+  };
+
+  const _onClick = async function () {
+    _downloading();
+    await _get_symbol(1);
+    _done();
   };
 
   useEffect(() => {
@@ -118,7 +127,7 @@ const Download = () => {
           </Col>
 
           <Col >
-            <Space direction="horizontal">
+            <Space direction="horizontal" align="baseline">
               <Switch checkedChildren="overwrite" unCheckedChildren="default" checked={checked} onChange={setChecked} />
               <Button type="primary" shape="round" icon={<DownloadOutlined />} onClick={_onClick}>
                 Download

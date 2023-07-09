@@ -14,7 +14,7 @@ import {
 } from '@ant-design/icons';
 
 import { Home } from './pages/home';
-import { StockList, Stock } from './pages/stock';
+import { StockDateList, StockList, Stock } from './pages/stock';
 import { DownloadList, Download } from './pages/download';
 
 // TODO Breadcrumb
@@ -69,8 +69,9 @@ function App() {
               <Routes>
 
                 <Route path='/' element={<Home />} />
-                <Route path='/stock' element={<StockList />} />
-                <Route path='/stock/:date_str' element={<Stock />} />
+                <Route path='/stock' element={<StockDateList />} />
+                <Route path='/stock/:date_str' element={<StockList />} />
+                <Route path='/stock/:date_str/:csv_str' element={<Stock />} />
                 <Route path='/download' element={<DownloadList />} />
                 <Route path='/download/:symbol_str' element={<Download />} />
 
@@ -79,9 +80,11 @@ function App() {
 
           </Content>
 
+          {/* 
           <Footer style={{ textAlign: 'center' }}>
             Stock © {new Date().getFullYear()} Created by Ping
           </Footer>
+           */}
 
         </Layout>
 
