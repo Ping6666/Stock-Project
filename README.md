@@ -9,6 +9,10 @@ If you are trying to use this code against the copyright law where you are or th
 
 [Usage](/document/usage.md)
 
+## Website
+
+[Website Structure](/document/website.md)
+
 ## License
 
 plz follow MIT License
