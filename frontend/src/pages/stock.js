@@ -248,6 +248,24 @@ const Stock = () => {
 
   const [data, setData] = useState({});
   const [showLegend, setShowLegend] = useState({ 'enabled': false, 'text': 'Show Legend' });
+  const [visibles, setVisibles] = useState({
+    'ohlc': true,
+    'volume': true,
+    'sma-5': true,
+    'sma-10': true,
+    'sma-20': true,
+    'sma-60': true,
+    'sma-120': false,
+    'sma-240': false,
+    'kc': false,
+    'bb': false,
+    'vbp': false,
+    'ikh': false,
+    'rsi': false,
+    'kd': false,
+    'k_rsi': true,
+    'd_rsi': true,
+  });
 
   const options = {
     chart: {
@@ -298,8 +316,16 @@ const Stock = () => {
     },
     plotOptions: {
       series: {
-        showInLegend: true
-      }
+        showInLegend: true,
+        events: {
+          legendItemClick(e) {
+            const _key = e.target.name;
+            const _value = !e.target.visible;
+
+            setVisibles({ ...visibles, [_key]: _value });
+          },
+        },
+      },
     },
     xAxis: {
     },
@@ -334,12 +360,14 @@ const Stock = () => {
         id: 'OHLC',
         name: 'ohlc',
         data: data['ohlc'],
+        visible: visibles['ohlc'],
       },
       {
         type: 'column',
         id: 'volume',
         name: 'volume',
         data: data['volume'],
+        visible: visibles['volume'],
         yAxis: 1,
       },
       //
@@ -347,6 +375,7 @@ const Stock = () => {
         type: 'sma',
         name: 'sma-5',
         linkedTo: 'OHLC',
+        visible: visibles['sma-5'],
         marker: {
           radius: 0
         },
@@ -358,6 +387,7 @@ const Stock = () => {
         type: 'sma',
         name: 'sma-10',
         linkedTo: 'OHLC',
+        visible: visibles['sma-10'],
         marker: {
           radius: 0
         },
@@ -369,6 +399,7 @@ const Stock = () => {
         type: 'sma',
         name: 'sma-20',
         linkedTo: 'OHLC',
+        visible: visibles['sma-20'],
         marker: {
           radius: 0
         },
@@ -380,6 +411,7 @@ const Stock = () => {
         type: 'sma',
         name: 'sma-60',
         linkedTo: 'OHLC',
+        visible: visibles['sma-60'],
         marker: {
           radius: 0
         },
@@ -391,7 +423,7 @@ const Stock = () => {
         type: 'sma',
         name: 'sma-120',
         linkedTo: 'OHLC',
-        visible: false,
+        visible: visibles['sma-120'],
         marker: {
           radius: 0
         },
@@ -403,7 +435,7 @@ const Stock = () => {
         type: 'sma',
         name: 'sma-240',
         linkedTo: 'OHLC',
-        visible: false,
+        visible: visibles['sma-240'],
         marker: {
           radius: 0
         },
@@ -414,24 +446,28 @@ const Stock = () => {
       //
       {
         type: 'keltnerchannels',
+        name: 'kc',
         linkedTo: 'OHLC',
-        visible: false,
+        visible: visibles['kc'],
       },
       {
         type: 'bb',
+        name: 'bb',
         linkedTo: 'OHLC',
-        visible: false,
+        visible: visibles['bb'],
       },
       {
         type: 'vbp',
+        name: 'vbp',
         linkedTo: 'OHLC',
-        visible: false,
+        visible: visibles['vbp'],
       },
       //
       {
         type: 'ikh',
+        name: 'ikh',
         linkedTo: 'OHLC',
-        visible: false,
+        visible: visibles['ikh'],
         tenkanLine: {
           styles: {
             lineColor: 'lightblue',
@@ -467,8 +503,9 @@ const Stock = () => {
       //
       {
         type: 'rsi',
+        name: 'rsi',
         linkedTo: 'OHLC',
-        visible: false,
+        visible: visibles['rsi'],
         marker: {
           radius: 0
         },
@@ -476,18 +513,23 @@ const Stock = () => {
       },
       {
         type: 'stochastic',
+        name: 'kd',
         linkedTo: 'OHLC',
-        visible: false,
+        visible: visibles['kd'],
         yAxis: 2,
       },
       {
         name: 'K * RSI',
+        name: 'k_rsi',
         data: data['k_rsi'],
+        visible: visibles['k_rsi'],
         yAxis: 2,
       },
       {
         name: 'D * RSI',
+        name: 'd_rsi',
         data: data['d_rsi'],
+        visible: visibles['d_rsi'],
         yAxis: 2,
       },
     ],
