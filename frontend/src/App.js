@@ -22,7 +22,7 @@ import { DownloadList, Download } from './pages/download';
 const {
   // Header,
   Content,
-  Footer,
+  // Footer,
   Sider,
 } = Layout;
 

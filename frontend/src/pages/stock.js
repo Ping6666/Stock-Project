@@ -225,6 +225,8 @@ const StockList = () => {
 
   useEffect(() => {
     _get_date_result();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -513,6 +515,8 @@ const Stock = () => {
 
   useEffect(() => {
     _get_date_csv();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
