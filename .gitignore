@@ -2,7 +2,8 @@
 
 docker-compose.yml
 
-**/.env
+/.env
+# **/.env
 **/__pycache__
 **/node_modules
 
