@@ -247,6 +247,7 @@ const Stock = () => {
   let params = useParams();
 
   const [data, setData] = useState({});
+  const [showLegend, setShowLegend] = useState({ 'enabled': false, 'text': 'Show Legend' });
 
   const options = {
     chart: {
@@ -258,8 +259,39 @@ const Stock = () => {
     accessibility: {
       enabled: false,
     },
+    exporting: {
+      buttons: {
+        contextButton: {
+          menuItems: [
+            {
+              text: showLegend['text'],
+              onclick: function () {
+                setShowLegend((value) => {
+                  if (value['enabled']) {
+                    return { 'enabled': false, 'text': 'Show Legend' };
+                  } else {
+                    return { 'enabled': true, 'text': 'Hide Legend' };
+                  }
+                });
+              },
+            },
+            "separator",
+            "viewFullscreen",
+            "printChart",
+            "separator",
+            "downloadPNG",
+            "downloadJPEG",
+            "downloadPDF",
+            "downloadSVG",
+          ],
+        }
+      },
+    },
     legend: {
-      enabled: true,
+      enabled: showLegend['enabled'],
+      align: 'right',
+      verticalAlign: 'top',
+      layout: 'vertical',
     },
     rangeSelector: {
       selected: 3,

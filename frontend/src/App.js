@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -45,11 +45,13 @@ const menuItems = [
 ];
 
 function App() {
+  const [collapsed, setCollapsed] = useState(true);
+
   return (
     <Router>
       <Layout style={{ minHeight: '100vh' }}>
 
-        <Sider>
+        <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} items={menuItems}>
           </Menu>
         </Sider>
