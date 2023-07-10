@@ -519,14 +519,12 @@ const Stock = () => {
         yAxis: 2,
       },
       {
-        name: 'K * RSI',
         name: 'k_rsi',
         data: data['k_rsi'],
         visible: visibles['k_rsi'],
         yAxis: 2,
       },
       {
-        name: 'D * RSI',
         name: 'd_rsi',
         data: data['d_rsi'],
         visible: visibles['d_rsi'],
