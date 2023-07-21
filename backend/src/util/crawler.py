@@ -8,7 +8,7 @@ from fake_useragent import UserAgent
 
 import numpy as np
 import pandas as pd
-from ta import momentum, trend, volatility
+from ta import momentum
 
 # The sample of Yahoo Finance website url
 # 'https://query1.finance.yahoo.com/v7/finance/download/2330.TW?period1=946944000&period2=1627603200&interval=1d&events=history&includeAdjustedClose=true'
@@ -91,63 +91,6 @@ def _preprocess_ta(df):
     _k_rsi = _rsi * _k / 100
     _d_rsi = _rsi * _d / 100
 
-    # --- KC --- #
-
-    _kc = volatility.KeltnerChannel(high=df['High'],
-                                    low=df['Low'],
-                                    close=df['Close'])
-    _kc_high = _kc.keltner_channel_hband()
-    _kc_middle = _kc.keltner_channel_mband()
-    _kc_low = _kc.keltner_channel_lband()
-
-    # --- SMA --- #
-
-    _windows = [5, 10, 20, 60, 120, 240]
-    _smas = []
-    for _window in _windows:
-        _sma = trend.SMAIndicator(close=df['Close'], window=_window)
-        _smas.append(_sma.sma_indicator())
-
-    # --- Ichimoku Cloud --- #
-
-    _ich = trend.IchimokuIndicator(high=df['High'], low=df['Low'], visual=True)
-    _ich_a = _ich.ichimoku_a()
-    _ich_b = _ich.ichimoku_b()
-    _ich_base_line = _ich.ichimoku_base_line()
-    _ich_conversion_line = _ich.ichimoku_conversion_line()
-
-    ## -- plot convert -- ##
-
-    def shift_list(seq, n):
-        return seq[n:]
-
-    _ich_plot_1 = ((df['Close'] - _ich_conversion_line) +
-                   (df['Close'] - _ich_base_line))
-    _ich_plot_2 = (_ich_a - _ich_b)
-
-    displacement = 26
-    ich_tmp_1 = shift_list(_ich_a, displacement - 1)
-    ich_tmp_2 = shift_list(_ich_b, displacement - 1)
-    ich_tmp_1 = df["Close"] - ich_tmp_1
-    ich_tmp_2 = df["Close"] - ich_tmp_2
-
-    _ich_plot_3 = []
-    for idx in range(len(ich_tmp_1)):
-        new_a = ich_tmp_1[idx]
-        new_b = ich_tmp_2[idx]
-
-        # magnitude
-        _new = min(abs(new_a), abs(new_b))
-
-        # sign
-        tmp_sign = 0
-        if new_a > 0 and new_b > 0:
-            tmp_sign = 1
-        elif new_a < 0 and new_b < 0:
-            tmp_sign = -1
-
-        _ich_plot_3.append(_new * tmp_sign)
-
     # --- pd.DataFrame --- #
 
     _df = pd.DataFrame({
@@ -162,18 +105,6 @@ def _preprocess_ta(df):
         'RSI': _float_list(_rsi),
         'K_RSI': _float_list(_k_rsi),
         'D_RSI': _float_list(_d_rsi),
-        'KC_high': _float_list(_kc_high),
-        'KC_middle': _float_list(_kc_middle),
-        'KC_low': _float_list(_kc_low),
-        'ICH_plot_1': _float_list(_ich_plot_1),
-        'ICH_plot_2': _float_list(_ich_plot_2),
-        'ICH_plot_3': _float_list(_ich_plot_3),
-        'SMA_5': _float_list(_smas[0]),
-        'SMA_10': _float_list(_smas[1]),
-        'SMA_20': _float_list(_smas[2]),
-        'SMA_60': _float_list(_smas[3]),
-        'SMA_120': _float_list(_smas[4]),
-        'SMA_240': _float_list(_smas[5]),
     })
 
     return _df
@@ -278,18 +209,6 @@ def _postprocess(_filename: str):
             'RSI': df['RSI'].iloc[-1],
             'K_RSI': df['K_RSI'].iloc[-1],
             'D_RSI': df['D_RSI'].iloc[-1],
-            'KC_high': df['KC_high'].iloc[-1],
-            'KC_middle': df['KC_middle'].iloc[-1],
-            'KC_low': df['KC_low'].iloc[-1],
-            'ICH_plot_1': df['ICH_plot_1'].iloc[-1],
-            'ICH_plot_2': df['ICH_plot_2'].iloc[-1],
-            'ICH_plot_3': df['ICH_plot_3'].iloc[-1],
-            'SMA_5': df['SMA_5'].iloc[-1],
-            'SMA_10': df['SMA_10'].iloc[-1],
-            'SMA_20': df['SMA_20'].iloc[-1],
-            'SMA_60': df['SMA_60'].iloc[-1],
-            'SMA_120': df['SMA_120'].iloc[-1],
-            'SMA_240': df['SMA_240'].iloc[-1],
         }
 
     except Exception as e:
@@ -313,18 +232,6 @@ def postprocess(_files: List[str], save_path: str):
         'RSI',
         'K_RSI',
         'D_RSI',
-        'KC_high',
-        'KC_middle',
-        'KC_low',
-        'ICH_plot_1',
-        'ICH_plot_2',
-        'ICH_plot_3',
-        'SMA_5',
-        'SMA_10',
-        'SMA_20',
-        'SMA_60',
-        'SMA_120',
-        'SMA_240',
     ]
     _datas = []
 

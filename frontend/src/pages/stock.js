@@ -4,23 +4,26 @@ import {
   useParams,
 } from 'react-router-dom';
 
-import { List, Skeleton, Table } from 'antd';
+import { List, Skeleton, Table, Input, Space } from 'antd';
 
 // import Highcharts from 'highcharts';
 import * as Highcharts from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
 
+import 'highcharts/css/stocktools/gui.css';
+import 'highcharts/css/annotations/popup.css';
+
 import { get_dates, get_date_result, get_date_csv } from '../javascripts/api';
 
+require("highcharts/modules/hollowcandlestick")(Highcharts);
 require("highcharts/indicators/indicators")(Highcharts);
-require("highcharts/indicators/bollinger-bands")(Highcharts);
-require("highcharts/indicators/atr")(Highcharts);
-require("highcharts/indicators/ema")(Highcharts);
-require("highcharts/indicators/keltner-channels")(Highcharts);
-require("highcharts/indicators/volume-by-price")(Highcharts);
-require("highcharts/indicators/ichimoku-kinko-hyo")(Highcharts);
-require("highcharts/indicators/rsi")(Highcharts);
-require("highcharts/indicators/stochastic")(Highcharts);
+require("highcharts/indicators/indicators-all")(Highcharts);
+
+require("highcharts/modules/drag-panes")(Highcharts);
+require("highcharts/modules/annotations-advanced")(Highcharts);
+require("highcharts/modules/price-indicator")(Highcharts);
+require("highcharts/modules/full-screen")(Highcharts);
+require("highcharts/modules/stock-tools")(Highcharts);
 
 require("highcharts/modules/exporting")(Highcharts);
 require("highcharts/modules/accessibility")(Highcharts);
@@ -66,13 +69,39 @@ const StockDateList = () => {
 const StockList = () => {
   let params = useParams();
 
+  const [searchValue, setSearchValue] = useState(null);
+
   const columns = [
     {
-      title: 'Name',
+      // title: 'Name',
+      title: () => {
+        return (
+          <>
+            <Space>
+              Name
+
+              <Input
+                placeholder={'Search Name'}
+                value={searchValue}
+                onChange={(e) => {
+                  setSearchValue(e.target.value);
+                }}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </Space>
+          </>
+        );
+      },
       dataIndex: 'Name',
       fixed: 'left',
+      width: '15%',
+      showSorterTooltip: false,
       sorter: (a, b) => a.Name.localeCompare(b.Name),
-      render: (text) => <Link to={"/stock/" + params.date_str + "/" + text}>{text}</Link>
+      render: (text) => <Link to={"/stock/" + params.date_str + "/" + text}>{text}</Link>,
+      filteredValue: searchValue ? [searchValue] : [],
+      onFilter: (value, record) => {
+        return record['Name'].toString().includes(value);
+      },
     },
     //
     {
@@ -128,69 +157,6 @@ const StockList = () => {
       title: 'D_RSI',
       dataIndex: 'D_RSI',
       sorter: (a, b) => a.D_RSI - b.D_RSI,
-    },
-    //
-    {
-      title: 'KC_high',
-      dataIndex: 'KC_high',
-      sorter: (a, b) => a.KC_high - b.KC_high,
-    },
-    {
-      title: 'KC_middle',
-      dataIndex: 'KC_middle',
-      sorter: (a, b) => a.KC_middle - b.KC_middle,
-    },
-    {
-      title: 'KC_low',
-      dataIndex: 'KC_low',
-      sorter: (a, b) => a.KC_low - b.KC_low,
-    },
-    //
-    {
-      title: 'ICH_plot_1',
-      dataIndex: 'ICH_plot_1',
-      sorter: (a, b) => a.ICH_plot_1 - b.ICH_plot_1,
-    },
-    {
-      title: 'ICH_plot_2',
-      dataIndex: 'ICH_plot_2',
-      sorter: (a, b) => a.ICH_plot_2 - b.ICH_plot_2,
-    },
-    {
-      title: 'ICH_plot_3',
-      dataIndex: 'ICH_plot_3',
-      sorter: (a, b) => a.ICH_plot_3 - b.ICH_plot_3,
-    },
-    //
-    {
-      title: 'SMA_5',
-      dataIndex: 'SMA_5',
-      sorter: (a, b) => a.SMA_5 - b.SMA_5,
-    },
-    {
-      title: 'SMA_10',
-      dataIndex: 'SMA_10',
-      sorter: (a, b) => a.SMA_10 - b.SMA_10,
-    },
-    {
-      title: 'SMA_20',
-      dataIndex: 'SMA_20',
-      sorter: (a, b) => a.SMA_20 - b.SMA_20,
-    },
-    {
-      title: 'SMA_60',
-      dataIndex: 'SMA_60',
-      sorter: (a, b) => a.SMA_60 - b.SMA_60,
-    },
-    {
-      title: 'SMA_120',
-      dataIndex: 'SMA_120',
-      sorter: (a, b) => a.SMA_120 - b.SMA_120,
-    },
-    {
-      title: 'SMA_240',
-      dataIndex: 'SMA_240',
-      sorter: (a, b) => a.SMA_240 - b.SMA_240,
     },
   ];
 
@@ -356,7 +322,7 @@ const Stock = () => {
     ],
     series: [
       {
-        type: 'candlestick',
+        type: 'hollowcandlestick',
         id: 'OHLC',
         name: 'ohlc',
         data: data['ohlc'],
