@@ -4,10 +4,12 @@ COPY package.json /workspace/package.json
 COPY package-lock.json /workspace/package-lock.json
 WORKDIR /workspace
 
-RUN npm install
+RUN npm ci
+# RUN npm install
 
 COPY . /workspace
 
+ENV NODE_ENV=production
 RUN npm run build
 
 EXPOSE 3000
