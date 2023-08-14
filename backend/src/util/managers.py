@@ -94,7 +94,8 @@ class FileManager():
                   is_file: bool = True,
                   is_dir: bool = False,
                   only_name: bool = True,
-                  recursive: bool = False):
+                  recursive: bool = False,
+                  sort: bool = True):
         """
         to get files under some path
 
@@ -134,7 +135,8 @@ class FileManager():
                                                      is_file=is_file,
                                                      is_dir=is_dir,
                                                      only_name=only_name,
-                                                     recursive=recursive)
+                                                     recursive=recursive,
+                                                     sort=False)
                     # TODO concat current base path
 
                     if _status:
@@ -145,7 +147,10 @@ class FileManager():
             print(e)
 
         files = list(files)
-        print(files)
+
+        if sort:
+            files.sort()
+            print(files)
 
         return status, files
 
