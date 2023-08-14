@@ -4,6 +4,7 @@ BTC-USD
 ^GSPC
 ^NDX
 ^DJI
+^SOX
 
 VOO
 SPY
